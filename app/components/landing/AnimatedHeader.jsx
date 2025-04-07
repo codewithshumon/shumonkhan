@@ -26,6 +26,7 @@ export default function AnimatedHeader() {
   const [currentGreeting, setCurrentGreeting] = useState(0);
   const [greetingIntervalId, setGreetingIntervalId] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [bgVisible, setBgVisible] = useState(true); // New state for background visibility
 
   useEffect(() => {
     // Progress bar animation (0-100% in 2500ms)
@@ -45,7 +46,11 @@ export default function AnimatedHeader() {
 
     const completeTimer = setTimeout(() => {
       setAnimationComplete(true);
-    }, 2900);
+      // Set timer to hide background after 1 second
+      setTimeout(() => {
+        setBgVisible(false);
+      }, 1000);
+    }, 3100);
 
     const collapseTimer = setTimeout(() => {
       setCollapsed(true);
@@ -87,8 +92,15 @@ export default function AnimatedHeader() {
       animate={collapsed ? { height: "80px" } : {}}
       transition={{ duration: 1, ease: "easeInOut" }}
     >
-      {/* Background */}
-      <div className="absolute inset-0 bg-black" />
+      {/* Background - now animated */}
+      {bgVisible && (
+        <motion.div
+          className="absolute inset-0 bg-black"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: bgVisible ? 1 : 0 }}
+          transition={{ duration: 0.5 }}
+        />
+      )}
 
       {/* Content container with max-width */}
       <div className="relative h-full w-full max-w-[1440px] px-10">
