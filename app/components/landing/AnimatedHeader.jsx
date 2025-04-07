@@ -5,30 +5,67 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+const greetings = [
+  "Hello",
+  "Ciao",
+  "Bonjour",
+  "こんにちは",
+  "привет",
+  "नमस्ते",
+  "你好",
+  "Hola",
+  "مرحبًا",
+  "Hallo",
+  "হ্যালো",
+];
+
 export default function AnimatedHeader() {
   const [animationStarted, setAnimationStarted] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [currentGreeting, setCurrentGreeting] = useState(0);
+  const [greetingIntervalId, setGreetingIntervalId] = useState(null);
 
   useEffect(() => {
     const startTimer = setTimeout(() => {
       setAnimationStarted(true);
-    }, 1000); // Start animation after 1 second
+    }, 2500);
 
     const completeTimer = setTimeout(() => {
       setAnimationComplete(true);
-    }, 1500); // Mark animation complete after 4 seconds
+    }, 2900);
 
     const collapseTimer = setTimeout(() => {
       setCollapsed(true);
-    }, 1600); // Start collapse slightly after animation completes
+    }, 3000);
+
+    // Greeting animation
+    const intervalId = setInterval(() => {
+      setCurrentGreeting((prev) => {
+        if (prev === greetings.length - 1) {
+          clearInterval(intervalId); // Stop when reaching last greeting
+          return prev;
+        }
+        return prev + 1;
+      });
+    }, 200); // Change every 0.2 seconds
+
+    setGreetingIntervalId(intervalId);
 
     return () => {
       clearTimeout(startTimer);
       clearTimeout(completeTimer);
       clearTimeout(collapseTimer);
+      clearInterval(intervalId);
     };
   }, []);
+
+  // Clear interval when reaching last greeting
+  useEffect(() => {
+    if (currentGreeting === greetings.length - 1 && greetingIntervalId) {
+      clearInterval(greetingIntervalId);
+    }
+  }, [currentGreeting, greetingIntervalId]);
 
   return (
     <motion.header
@@ -41,7 +78,7 @@ export default function AnimatedHeader() {
       <div className="absolute inset-0 bg-black" />
 
       {/* Content container with max-width */}
-      <div className="relative h-full w-full max-w-[1440px] px-10 bg-amber-500">
+      <div className="relative h-full w-full max-w-[1440px] px-10">
         {/* Loading Animation */}
         <motion.div
           layout
@@ -51,14 +88,14 @@ export default function AnimatedHeader() {
             left: "50%",
             x: "-50%",
             y: "-50%",
-            width: "12rem",
-            height: "12rem",
+            width: "10rem",
+            height: "10rem",
           }}
           animate={
             animationStarted
               ? {
                   top: "1rem",
-                  left: "2.5rem", // Match the padding
+                  left: "2.5rem",
                   x: 0,
                   y: 0,
                   width: "3rem",
@@ -67,7 +104,7 @@ export default function AnimatedHeader() {
               : {}
           }
           transition={{ duration: 1 }}
-          className="rounded-full border-4 border-white overflow-hidden bg-green-600"
+          className="rounded-full border-4 border-white overflow-hidden bg-green-600 z-10"
           style={{
             borderWidth: animationStarted ? "2px" : "4px",
           }}
@@ -78,31 +115,33 @@ export default function AnimatedHeader() {
             fill
             className="object-cover"
           />
+        </motion.div>
 
-          <motion.div
-            className="absolute inset-0 flex items-center justify-center text-white text-4xl font-bold"
-            initial={{ opacity: 1 }}
-            animate={{
-              opacity: animationStarted ? 0 : 1,
-              fontSize: animationStarted ? "0rem" : "2.25rem",
-            }}
-            transition={{ duration: 1, delay: animationStarted ? 1 : 0 }}
-          >
-            Hello
-          </motion.div>
+        {/* Greetings text - positioned below the image */}
+        <motion.div
+          className="absolute top-[calc(50%+7rem)] left-1/2 transform -translate-x-1/2 text-white text-4xl font-bold text-center w-full"
+          initial={{ opacity: 1, y: 0 }}
+          animate={{
+            opacity: animationStarted ? 0 : 1,
+            y: animationStarted ? -20 : 0,
+          }}
+          transition={{ duration: 0.1, delay: animationStarted ? 0.1 : 0 }}
+          style={{ top: `calc(50% + 7rem)` }}
+        >
+          {greetings[currentGreeting]}
         </motion.div>
 
         {/* Navigation */}
         <motion.nav
           initial={{ opacity: 0, y: -20 }}
           animate={animationComplete ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className={`absolute top-0  right-0 h-[80px] flex items-center ${
+          transition={{ duration: 0.2 }}
+          className={`absolute top-0 right-0 h-[80px] flex items-center ${
             !animationComplete ? "pointer-events-none" : ""
           }`}
         >
           <div className="w-full flex justify-between items-center">
-            <div className="w-12"></div> {/* Spacer for profile image */}
+            <div className="w-12"></div>
             <div className="flex space-x-8">
               <Link
                 href="/work"
@@ -110,14 +149,12 @@ export default function AnimatedHeader() {
               >
                 Work
               </Link>
-
               <Link
                 href="/about"
                 className="text-white hover:text-gray-300 transition"
               >
                 About
               </Link>
-
               <Link
                 href="/contact"
                 className="text-white hover:text-gray-300 transition"
