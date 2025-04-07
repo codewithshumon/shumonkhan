@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const greetings = [
-  "Hello",
+  "Hallo",
   "Ciao",
   "Bonjour",
   "こんにちは",
@@ -15,8 +15,8 @@ const greetings = [
   "你好",
   "Hola",
   "مرحبًا",
-  "Hallo",
   "হ্যালো",
+  "Hello",
 ];
 
 export default function AnimatedHeader() {
@@ -25,8 +25,20 @@ export default function AnimatedHeader() {
   const [collapsed, setCollapsed] = useState(false);
   const [currentGreeting, setCurrentGreeting] = useState(0);
   const [greetingIntervalId, setGreetingIntervalId] = useState(null);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    // Progress bar animation (0-100% in 2500ms)
+    const progressInterval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(progressInterval);
+          return 100;
+        }
+        return prev + 1;
+      });
+    }, 22); // 2500ms / 100 = 25ms per percent
+
     const startTimer = setTimeout(() => {
       setAnimationStarted(true);
     }, 2500);
@@ -53,6 +65,7 @@ export default function AnimatedHeader() {
     setGreetingIntervalId(intervalId);
 
     return () => {
+      clearInterval(progressInterval);
       clearTimeout(startTimer);
       clearTimeout(completeTimer);
       clearTimeout(collapseTimer);
@@ -117,16 +130,51 @@ export default function AnimatedHeader() {
           />
         </motion.div>
 
+        {/* Circular Progress Bar - only visible during initial load */}
+        {!animationStarted && (
+          <div
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+            style={{
+              width: "11rem",
+              height: "11rem",
+            }}
+          >
+            <svg className="w-full h-full" viewBox="0 0 100 100">
+              {/* Background circle */}
+              <circle
+                cx="50"
+                cy="50"
+                r="45"
+                fill="none"
+                stroke="#333"
+                strokeWidth="3"
+              />
+              {/* Progress circle */}
+              <circle
+                cx="50"
+                cy="50"
+                r="45"
+                fill="none"
+                stroke="green"
+                strokeWidth="5"
+                strokeLinecap="round"
+                strokeDasharray={`${progress * 2.83}, 283`} // 2πr ≈ 283 when r=45
+                transform="rotate(-90 50 50)"
+              />
+            </svg>
+          </div>
+        )}
+
         {/* Greetings text - positioned below the image */}
         <motion.div
-          className="absolute top-[calc(50%+7rem)] left-1/2 transform -translate-x-1/2 text-white text-4xl font-bold text-center w-full"
+          className="absolute top-[calc(50%+6rem)] left-1/2 transform -translate-x-1/2 text-white text-4xl font-bold text-center w-full"
           initial={{ opacity: 1, y: 0 }}
           animate={{
             opacity: animationStarted ? 0 : 1,
             y: animationStarted ? -20 : 0,
           }}
           transition={{ duration: 0.1, delay: animationStarted ? 0.1 : 0 }}
-          style={{ top: `calc(50% + 7rem)` }}
+          style={{ top: `calc(50% + 6rem)` }}
         >
           {greetings[currentGreeting]}
         </motion.div>
