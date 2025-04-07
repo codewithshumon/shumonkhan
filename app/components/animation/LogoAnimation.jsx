@@ -26,17 +26,6 @@ export default function LogoAnimation() {
   const [greetingIntervalId, setGreetingIntervalId] = useState(null);
   const [progress, setProgress] = useState(0);
 
-  const circleVariants = {
-    initial: {
-      width: "2.5rem",
-      height: "2.5rem",
-    },
-    expanded: {
-      width: "300%",
-      height: "300%",
-    },
-  };
-
   useEffect(() => {
     // Progress bar animation (0-100% in 2500ms)
     const progressInterval = setInterval(() => {
@@ -188,14 +177,20 @@ export default function LogoAnimation() {
           </motion.div>
         </div>
       </motion.div>
+
+      {/* Animated Circle */}
       <motion.div
-        className="fixed top-[2.5rem] left-[4rem] bg-black rounded-full z-50 "
+        className="fixed top-[2.5rem] left-[4rem] bg-black rounded-full z-50"
         style={{
           transform: "translate(-50%, -50%)",
         }}
-        variants={circleVariants}
-        initial="initial"
-        animate={collapsed ? "initial" : "expanded"}
+        initial={{ width: "2.5rem", height: "2.5rem" }}
+        animate={
+          collapsed
+            ? { width: "2.5rem", height: "2.5rem" }
+            : { width: "300%", height: "300%" }
+        }
+        transition={{ duration: 0.3 }}
       />
     </>
   );
