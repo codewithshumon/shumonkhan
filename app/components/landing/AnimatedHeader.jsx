@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function LoadingPage() {
+export default function AnimatedHeader() {
   const [animationStarted, setAnimationStarted] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
-  const [heightTransition, setHeightTransition] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     const startTimer = setTimeout(() => {
@@ -17,65 +17,57 @@ export default function LoadingPage() {
 
     const completeTimer = setTimeout(() => {
       setAnimationComplete(true);
-      // Start height transition slightly after animation completes
-      setTimeout(() => setHeightTransition(true), 100);
-    }, 4000); // Mark animation complete after 4 seconds (1s delay + 3s animation)
+    }, 1500); // Mark animation complete after 4 seconds
+
+    const collapseTimer = setTimeout(() => {
+      setCollapsed(true);
+    }, 1600); // Start collapse slightly after animation completes
 
     return () => {
       clearTimeout(startTimer);
       clearTimeout(completeTimer);
+      clearTimeout(collapseTimer);
     };
   }, []);
 
   return (
-    <div className="relative overflow-hidden">
-      {/* Background that will collapse */}
-      <motion.div
-        className="bg-black"
-        initial={{ height: "100vh" }}
-        animate={
-          heightTransition
-            ? {
-                height: "15vh",
-              }
-            : {}
-        }
-        transition={{ duration: 2, ease: "easeInOut" }}
-      />
+    <motion.header
+      className="fixed top-0 left-0 right-0 z-50 overflow-hidden flex justify-center"
+      initial={{ height: "100vh" }}
+      animate={collapsed ? { height: "80px" } : {}}
+      transition={{ duration: 1, ease: "easeInOut" }}
+    >
+      {/* Background */}
+      <div className="absolute inset-0 bg-black" />
 
-      {/* Content */}
-      <div
-        className={`${
-          animationComplete ? "h-[15vh]" : "min-h-screen"
-        } absolute inset-0`}
-      >
+      {/* Content container with max-width */}
+      <div className="relative h-full w-full max-w-[1440px] px-10 bg-amber-500">
         {/* Loading Animation */}
         <motion.div
           layout
           initial={{
-            position: "fixed",
+            position: "absolute",
             top: "50%",
             left: "50%",
             x: "-50%",
             y: "-50%",
             width: "12rem",
             height: "12rem",
-            zIndex: 50,
           }}
           animate={
             animationStarted
               ? {
                   top: "1rem",
-                  left: "1rem",
+                  left: "2.5rem", // Match the padding
                   x: 0,
                   y: 0,
-                  width: "4rem",
-                  height: "4rem",
+                  width: "3rem",
+                  height: "3rem",
                 }
               : {}
           }
-          transition={{ duration: 3 }}
-          className="rounded-full border-4 border-white overflow-hidden relative"
+          transition={{ duration: 1 }}
+          className="rounded-full border-4 border-white overflow-hidden bg-green-600"
           style={{
             borderWidth: animationStarted ? "2px" : "4px",
           }}
@@ -100,47 +92,43 @@ export default function LoadingPage() {
           </motion.div>
         </motion.div>
 
-        {/* Header that appears after animation */}
-        <motion.header
+        {/* Navigation */}
+        <motion.nav
           initial={{ opacity: 0, y: -20 }}
           animate={animationComplete ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
-          className={`fixed top-0 left-0 right-0 backdrop-blur-sm z-40 ${
+          className={`absolute top-0  right-0 h-[80px] flex items-center ${
             !animationComplete ? "pointer-events-none" : ""
           }`}
         >
-          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div className="w-16"></div> {/* Spacer to balance logo */}
-            <nav className="flex space-x-8">
+          <div className="w-full flex justify-between items-center">
+            <div className="w-12"></div> {/* Spacer for profile image */}
+            <div className="flex space-x-8">
               <Link
-                href="/"
+                href="/work"
                 className="text-white hover:text-gray-300 transition"
               >
-                Home
+                Work
               </Link>
+
               <Link
                 href="/about"
                 className="text-white hover:text-gray-300 transition"
               >
                 About
               </Link>
-              <Link
-                href="/projects"
-                className="text-white hover:text-gray-300 transition"
-              >
-                Projects
-              </Link>
+
               <Link
                 href="/contact"
                 className="text-white hover:text-gray-300 transition"
               >
                 Contact
               </Link>
-            </nav>
-            <div className="w-16"></div>
+            </div>
+            <div className="w-12"></div>
           </div>
-        </motion.header>
+        </motion.nav>
       </div>
-    </div>
+    </motion.header>
   );
 }

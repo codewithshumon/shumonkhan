@@ -1,4 +1,4 @@
-import LoadingPage from "../landing/LoadingPage";
+import LoadingPage from "../landing/AnimatedHeader";
 
 const Header = () => {
   return (
