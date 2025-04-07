@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,7 +26,19 @@ export default function AnimatedHeader() {
   const [currentGreeting, setCurrentGreeting] = useState(0);
   const [greetingIntervalId, setGreetingIntervalId] = useState(null);
   const [progress, setProgress] = useState(0);
-  const [bgVisible, setBgVisible] = useState(true); // New state for background visibility
+  const [bgVisible, setBgVisible] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
+
+  const { scrollY } = useScroll();
+
+  // Scroll listener
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    if (latest > 120) {
+      setScrolled(true);
+    } else {
+      setScrolled(false);
+    }
+  });
 
   useEffect(() => {
     // Progress bar animation (0-100% in 2500ms)
@@ -192,7 +204,14 @@ export default function AnimatedHeader() {
         {/* Navigation */}
         <motion.nav
           initial={{ opacity: 0, y: -20 }}
-          animate={animationComplete ? { opacity: 1, y: 0 } : {}}
+          animate={
+            animationComplete
+              ? {
+                  opacity: 1,
+                  y: scrolled ? -30 : 0,
+                }
+              : {}
+          }
           transition={{ duration: 0.2 }}
           className={`absolute top-0 right-0 h-[80px] flex items-center ${
             !animationComplete ? "pointer-events-none" : ""
@@ -200,7 +219,13 @@ export default function AnimatedHeader() {
         >
           <div className="w-full flex justify-between items-center">
             <div className="w-12"></div>
-            <div className="flex space-x-8">
+            <motion.div
+              className="flex space-x-8"
+              animate={{
+                y: scrolled ? -30 : 0,
+              }}
+              transition={{ duration: 0.2 }}
+            >
               <Link
                 href="/work"
                 className="text-white hover:text-gray-300 transition"
@@ -219,7 +244,7 @@ export default function AnimatedHeader() {
               >
                 Contact
               </Link>
-            </div>
+            </motion.div>
             <div className="w-12"></div>
           </div>
         </motion.nav>
