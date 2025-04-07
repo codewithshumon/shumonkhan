@@ -1,4 +1,4 @@
-import AnimatedHeader from "@/app/components/landing/AnimatedHeader";
+import AnimatedHeader from "@/app/components/header/SideHeader";
 
 export default function Home() {
   return (
