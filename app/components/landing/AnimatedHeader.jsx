@@ -93,14 +93,12 @@ export default function AnimatedHeader() {
       transition={{ duration: 1, ease: "easeInOut" }}
     >
       {/* Background - now animated */}
-      {bgVisible && (
-        <motion.div
-          className="absolute inset-0 bg-black"
-          initial={{ opacity: 1 }}
-          animate={{ opacity: bgVisible ? 1 : 0 }}
-          transition={{ duration: 0.5 }}
-        />
-      )}
+      <motion.div
+        className="absolute inset-0 bg-black"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: bgVisible ? 1 : 0 }}
+        transition={{ duration: 0.5 }}
+      />
 
       {/* Content container with max-width */}
       <div className="relative h-full w-full max-w-[1440px] px-10">
