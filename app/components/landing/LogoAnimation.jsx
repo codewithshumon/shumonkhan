@@ -26,7 +26,7 @@ const LogoAnimation = () => {
         }}
         variants={circleVariants}
         initial="initial"
-        animate={isExpanded ? "expanded" : "initial"}
+        animate={isExpanded ? " initial" : "expanded"}
         onClick={() => setIsExpanded(!isExpanded)}
       />
     </div>
