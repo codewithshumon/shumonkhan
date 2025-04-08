@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import AnimatedTextAboutMe from "./AnimatedTextAboutMe";
 
 const greetings = [
   "Hallo",
@@ -44,7 +45,7 @@ export default function LogoAnimation() {
 
     const completeTimer = setTimeout(() => {
       setAnimationComplete(true);
-    }, 3100);
+    }, 4000);
 
     const collapseTimer = setTimeout(() => {
       setCollapsed(true);
@@ -82,9 +83,9 @@ export default function LogoAnimation() {
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 right-0 z-60 overflow-hidden flex justify-center bg-yellow-300"
+        className="fixed top-0 left-0 right-0 z-60 overflow-hidden flex justify-center "
         initial={{ height: "100vh" }}
-        animate={collapsed ? { height: "11vh", width: "15vw" } : {}}
+        animate={collapsed ? { height: "15vh", width: "15vw" } : {}}
         transition={{ duration: 1, ease: "easeInOut" }}
       >
         {/* Content container with max-width */}
@@ -176,18 +177,11 @@ export default function LogoAnimation() {
             {greetings[currentGreeting]}
           </motion.div>
         </div>
-        <motion.div
-          className="absolute top-[calc(50%+4rem)] left-1/2 transform -translate-x-1/2 text-white text-4xl font-bold text-center w-full"
-          initial={{ opacity: 1, y: 0 }}
-          animate={{
-            opacity: animationStarted ? 0 : 1,
-            y: animationStarted ? -20 : 0,
-          }}
-          transition={{ duration: 0.1, delay: animationStarted ? 0.1 : 0 }}
-          style={{ top: `calc(50% + 4rem)` }}
-        >
-          {greetings[currentGreeting]}
-        </motion.div>
+        {animationComplete && (
+          <div className=" absolute top-[1.8rem] right-0 w-[70%]  overflow-x-hidden ">
+            <AnimatedTextAboutMe />
+          </div>
+        )}
       </motion.div>
 
       {/* Animated Circle */}
