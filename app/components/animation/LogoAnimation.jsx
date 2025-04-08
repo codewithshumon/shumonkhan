@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import AnimatedTextAboutMe from "./AnimatedTextAboutMe";
+import Link from "next/link";
 
 const greetings = [
   "Hallo",
@@ -45,11 +46,11 @@ export default function LogoAnimation() {
 
     const completeTimer = setTimeout(() => {
       setAnimationComplete(true);
-    }, 4000);
+    }, 3000);
 
     const collapseTimer = setTimeout(() => {
       setCollapsed(true);
-    }, 3200);
+    }, 2800);
 
     // Greeting animation
     const intervalId = setInterval(() => {
@@ -86,7 +87,7 @@ export default function LogoAnimation() {
         className="fixed top-0 left-0 right-0 z-60 overflow-hidden flex justify-center "
         initial={{ height: "100vh" }}
         animate={collapsed ? { height: "15vh", width: "15vw" } : {}}
-        transition={{ duration: 1, ease: "easeInOut" }}
+        transition={{ duration: 0.2, ease: "easeInOut" }}
       >
         {/* Content container with max-width */}
         <div className="relative h-screen w-screen max-w-[1440px] px-10">
@@ -114,18 +115,20 @@ export default function LogoAnimation() {
                   }
                 : {}
             }
-            transition={{ duration: 1 }}
+            transition={{ duration: 0.6 }}
             className="rounded-full border-4 border-white overflow-hidden bg-green-600 z-10"
             style={{
               borderWidth: animationStarted ? "2px" : "4px",
             }}
           >
-            <Image
-              src="https://avatar.iran.liara.run/public/boy"
-              alt="Profile"
-              fill
-              className="object-cover"
-            />
+            <Link href="/">
+              <Image
+                src="https://avatar.iran.liara.run/public/boy"
+                alt="Profile"
+                fill
+                className="object-cover"
+              />
+            </Link>
           </motion.div>
 
           {/* Circular Progress Bar - only visible during initial load */}

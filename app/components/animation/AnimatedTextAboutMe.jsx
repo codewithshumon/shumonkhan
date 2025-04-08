@@ -79,10 +79,10 @@ const AnimatedTextAboutMe = ({ animationComplete }) => {
         }}
       >
         <div className="relative whitespace-nowrap w-fit flex">
-          <div ref={firstText} className="pr-4">
+          <div ref={firstText} className="pr-1">
             <h1 className="text-[#0a0801]">{animationText}</h1>
           </div>
-          <div ref={secondText} className="absolute left-full pr-4">
+          <div ref={secondText} className="absolute left-full pr-1">
             <h1 className="text-[#0a0801]">{animationText}</h1>
           </div>
         </div>
