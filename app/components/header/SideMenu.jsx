@@ -49,7 +49,14 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
                 <motion.div
                   key={index}
                   initial={{ x: "100%" }}
-                  animate={{ x: 0 }}
+                  animate={{
+                    x: isMenuOpen ? 0 : "100%",
+                    transition: {
+                      delay: index * 0.15,
+                      duration: 0.4,
+                      ease: "easeOut",
+                    },
+                  }}
                   exit={{
                     x: "100%",
                     transition: {
@@ -57,11 +64,6 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
                       duration: 0.3,
                       ease: "easeIn",
                     },
-                  }}
-                  transition={{
-                    delay: index * 0.15,
-                    duration: 0.4,
-                    ease: "easeOut",
                   }}
                   className="absolute inset-0"
                   style={{ backgroundColor: color }}
