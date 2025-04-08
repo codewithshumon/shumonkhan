@@ -36,7 +36,7 @@ const AnimatedTextAboutMe = ({ animationComplete }) => {
 
       // Animation loop
       const animate = () => {
-        xPercent += 0.1 * direction;
+        xPercent += 0.05 * direction;
 
         // Wrap around logic
         if (xPercent <= -100) {
