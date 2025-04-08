@@ -1,9 +1,10 @@
+import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import useScrollY from "../../hooks/useScroll";
 
-const AnimatedTextAboutMe = () => {
+const AnimatedTextAboutMe = ({ animationComplete }) => {
   const animationText =
     "© Code & Design By Shumon Khan • Hi, I am a Designer and Developer";
 
@@ -22,44 +23,54 @@ const AnimatedTextAboutMe = () => {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    gsap.to(slider.current, {
-      scrollTrigger: {
-        trigger: document.querySelector(".scrollIdentyfire"),
-        scrub: 0.25,
-        start: 0,
-        onUpdate: (e) => {
-          direction = e.direction * -1;
+    const ctx = gsap.context(() => {
+      // ScrollTrigger for direction control
+      ScrollTrigger.create({
+        trigger: slider.current,
+        start: "top bottom",
+        end: "bottom top",
+        onUpdate: (self) => {
+          direction = self.direction * -1; // Reverse scroll direction
         },
-      },
-    });
+      });
 
-    const animate = () => {
-      if (xPercent < -100) {
-        xPercent = 0;
-      } else if (xPercent > 0) {
-        xPercent = -100;
-      }
+      // Animation loop
+      const animate = () => {
+        xPercent += 0.1 * direction;
 
-      gsap.set(firstText.current, { xPercent: xPercent });
-      gsap.set(secondText.current, { xPercent: xPercent });
+        // Wrap around logic
+        if (xPercent <= -100) {
+          xPercent = 0;
+        } else if (xPercent >= 0) {
+          xPercent = -100;
+        }
 
-      xPercent += 0.1 * direction;
-      requestAnimationFrame(animate);
-    };
+        gsap.set([firstText.current, secondText.current], {
+          xPercent: xPercent,
+        });
 
-    const animationId = requestAnimationFrame(animate);
+        requestAnimationFrame(animate);
+      };
+
+      animate();
+    }, slider);
 
     return () => {
-      cancelAnimationFrame(animationId);
+      ctx.revert(); // Cleanup GSAP context
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, [direction]);
+  }, []);
 
   return (
-    <div>
+    <motion.div
+      initial={{ left: "-100%" }}
+      animate={{ left: animationComplete ? "0" : "-100%" }}
+      transition={{ duration: 1, ease: "easeInOut" }}
+      className="relative"
+    >
       <div
         ref={slider}
-        className="w-full h-full text-[15px] font-medium select-none scrollIdentyfire overflow-hidden"
+        className="w-full h-full text-[15px] font-medium select-none overflow-hidden"
         style={{
           maskImage:
             "linear-gradient(to right, transparent 0%, black 20%, black 90%, transparent 100%)",
@@ -67,23 +78,16 @@ const AnimatedTextAboutMe = () => {
             "linear-gradient(to right, transparent 0%, black 20%, black 90%, transparent 100%)",
         }}
       >
-        <div className="relative whitespace-nowrap w-fit flex flex-row items-center ">
-          <div
-            ref={firstText}
-            className="w-[490px] flex flex-row items-center -bg-red-600 "
-          >
+        <div className="relative whitespace-nowrap w-fit flex">
+          <div ref={firstText} className="pr-4">
             <h1 className="text-[#0a0801]">{animationText}</h1>
           </div>
-
-          <div
-            ref={secondText}
-            className="absolute w-[490px] left-[100%] flex flex-row items-center -bg-green-400 "
-          >
+          <div ref={secondText} className="absolute left-full pr-4">
             <h1 className="text-[#0a0801]">{animationText}</h1>
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -179,7 +179,7 @@ export default function LogoAnimation() {
         </div>
         {animationComplete && (
           <div className=" absolute top-[1.8rem] right-0 w-[70%]  overflow-x-hidden ">
-            <AnimatedTextAboutMe />
+            <AnimatedTextAboutMe animationComplete={animationComplete} />
           </div>
         )}
       </motion.div>
