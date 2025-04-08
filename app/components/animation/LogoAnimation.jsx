@@ -82,13 +82,13 @@ export default function LogoAnimation() {
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 right-0 z-60 overflow-hidden flex justify-center"
+        className="fixed top-0 left-0 right-0 z-60 overflow-hidden flex justify-center bg-yellow-300"
         initial={{ height: "100vh" }}
-        animate={collapsed ? { height: "80px" } : {}}
+        animate={collapsed ? { height: "11vh", width: "15vw" } : {}}
         transition={{ duration: 1, ease: "easeInOut" }}
       >
         {/* Content container with max-width */}
-        <div className="relative h-full w-full max-w-[1440px] px-10">
+        <div className="relative h-screen w-screen max-w-[1440px] px-10">
           {/* Loading Animation */}
           <motion.div
             layout
@@ -176,6 +176,18 @@ export default function LogoAnimation() {
             {greetings[currentGreeting]}
           </motion.div>
         </div>
+        <motion.div
+          className="absolute top-[calc(50%+4rem)] left-1/2 transform -translate-x-1/2 text-white text-4xl font-bold text-center w-full"
+          initial={{ opacity: 1, y: 0 }}
+          animate={{
+            opacity: animationStarted ? 0 : 1,
+            y: animationStarted ? -20 : 0,
+          }}
+          transition={{ duration: 0.1, delay: animationStarted ? 0.1 : 0 }}
+          style={{ top: `calc(50% + 4rem)` }}
+        >
+          {greetings[currentGreeting]}
+        </motion.div>
       </motion.div>
 
       {/* Animated Circle */}
@@ -184,7 +196,7 @@ export default function LogoAnimation() {
         style={{
           transform: "translate(-50%, -50%)",
         }}
-        initial={{ width: "2.5rem", height: "2.5rem" }}
+        initial={{ width: "300%", height: "300%" }}
         animate={
           collapsed
             ? { width: "2.5rem", height: "2.5rem" }
