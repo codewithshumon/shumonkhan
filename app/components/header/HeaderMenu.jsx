@@ -75,24 +75,29 @@ const HeaderMenu = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5 }}
+            exit={{ opacity: 0, scale: 0 }}
             transition={{ type: "spring", damping: 10 }}
-            className="fixed right-10 top-10 z-35"
+            className="fixed right-10 top-8 z-35 "
           >
             <button
               onClick={toggleMenu}
-              className="w-20 h-20 rounded-full bg-blue-500 shadow-lg flex flex-col items-center justify-center gap-1.5 hover:bg-blue-600 transition-colors cursor-pointer"
+              className="w-18 h-18 rounded-full bg-blue-500 shadow-lg flex flex-col items-center justify-center gap-1.5 hover:bg-blue-600 transition-colors cursor-pointer"
             >
               <motion.div
-                className="h-[3px] w-[40px] bg-white rounded-full"
-                animate={{ rotate: isMenuOpen ? 45 : 0, y: isMenuOpen ? 6 : 0 }}
+                className="h-[2px] w-[25px] bg-white rounded-full"
+                animate={{
+                  rotate: isMenuOpen ? 45 : 0,
+                  y: isMenuOpen ? 4 : 0, // Increased from 6 to 8
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
               />
               <motion.div
-                className="h-[3px] w-[40px] bg-white rounded-full"
+                className="h-[2px] w-[25px] bg-white rounded-full"
                 animate={{
                   rotate: isMenuOpen ? -45 : 0,
-                  y: isMenuOpen ? -6 : 0,
+                  y: isMenuOpen ? -4 : 0, // Increased from -6 to -8
                 }}
+                transition={{ type: "spring", stiffness: 300, damping: 15 }}
               />
             </button>
           </motion.div>
