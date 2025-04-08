@@ -105,7 +105,10 @@ const HeaderMenu = () => {
       </AnimatePresence>
 
       {/* Side Menu */}
-      <SideMenu isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+      <SideMenu
+        isMenuOpen={isMenuOpen}
+        toggleMenu={() => setIsMenuOpen(false)}
+      />
     </>
   );
 };
