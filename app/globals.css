@@ -24,7 +24,7 @@ body::-webkit-scrollbar {
 }
 
 .companyNameRightToLeft {
-  animation: companyNameRightToLeft 50s infinite linear;
+  animation: companyNameRightToLeft 60s infinite linear;
 }
 @keyframes companyNameLeftToRight {
   from {
@@ -36,7 +36,7 @@ body::-webkit-scrollbar {
 }
 
 .companyNameLeftToRight {
-  animation: companyNameLeftToRight 50s infinite linear;
+  animation: companyNameLeftToRight 60s infinite linear;
 }
 
 @keyframes logoSapinRigh {

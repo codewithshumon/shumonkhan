@@ -7,17 +7,17 @@ import AnimatedTextAboutMe from "./AnimatedTextAboutMe";
 import Link from "next/link";
 
 const greetings = [
-  "Hallo",
-  "Ciao",
-  "Bonjour",
-  "こんにちは",
-  "привет",
-  "नमस्ते",
-  "你好",
-  "Hola",
-  "مرحبًا",
-  "হ্যালো",
-  "Hello",
+  "Willkommen", // German
+  "Benvenuto", // Italian
+  "Bienvenue", // French
+  "ようこそ", // Japanese (Yōkoso)
+  "Добро пожаловать", // Russian (Dobro pozhalovat’)
+  "स्वागत है", // Hindi (Swagat hai)
+  "欢迎", // Chinese (Huānyíng)
+  "Bienvenido", // Spanish
+  "أهلاً وسهلاً", // Arabic (Ahlan wa sahlan)
+  "স্বাগতম", // Bengali (Shagatom)
+  "Welcome", // English
 ];
 
 export default function LogoAnimation() {
@@ -84,7 +84,7 @@ export default function LogoAnimation() {
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 right-0 z-60 overflow-hidden flex justify-center "
+        className="fixed top-0 left-0 right-0 z-60 overflow-hidden flex justify-center  "
         initial={{ height: "100vh" }}
         animate={collapsed ? { height: "15vh", width: "15vw" } : {}}
         transition={{ duration: 0.2, ease: "easeInOut" }}
@@ -168,7 +168,7 @@ export default function LogoAnimation() {
 
           {/* Greetings text - positioned below the image */}
           <motion.div
-            className="absolute top-[calc(50%+4rem)] left-1/2 transform -translate-x-1/2 text-white text-4xl font-bold text-center w-full"
+            className="absolute top-[calc(50%+4rem)] left-1/2 transform -translate-x-1/2 text-white text-xl font-bold text-center w-full"
             initial={{ opacity: 1, y: 0 }}
             animate={{
               opacity: animationStarted ? 0 : 1,
@@ -177,7 +177,7 @@ export default function LogoAnimation() {
             transition={{ duration: 0.1, delay: animationStarted ? 0.1 : 0 }}
             style={{ top: `calc(50% + 4rem)` }}
           >
-            {greetings[currentGreeting]}
+            {":)"} {greetings[currentGreeting]}
           </motion.div>
         </div>
         {animationComplete && (
