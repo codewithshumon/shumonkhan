@@ -89,7 +89,7 @@ const HeaderMenu = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
             transition={{ type: "spring", damping: 10 }}
-            className="fixed right-10 top-8 z-35 "
+            className="fixed right-10 top-8 z-40 "
           >
             <button
               onClick={toggleMenu}

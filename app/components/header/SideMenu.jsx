@@ -94,7 +94,7 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
 
       <div
         ref={menuPanelRef}
-        className="fixed bg-amber-400 top-0 right-0 h-screen w-[90vw] sm:w-2/3 lg:w-1/3 shadow-xl z-40 overflow-hidden"
+        className="fixed bg-amber-400 top-0 right-0 h-screen w-[90vw] sm:w-2/3 lg:w-1/3 shadow-xl z-35 overflow-hidden"
         style={{ transform: "translateX(100%)" }}
       >
         <div className="relative h-full w-full">
