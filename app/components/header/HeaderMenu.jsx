@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import {
   motion,
   AnimatePresence,
@@ -11,6 +12,7 @@ import Link from "next/link";
 import SideMenu from "./SideMenu";
 
 const HeaderMenu = () => {
+  const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -48,7 +50,7 @@ const HeaderMenu = () => {
           transition={{ type: "spring", damping: 20 }}
           className="fixed top-0 left-0 h-[15vh] w-full flex justify-end px-10 z-20"
         >
-          <nav className="flex items-center gap-12 font-semibold text-gray-200">
+          <nav className="flex items-center gap-12 font-semibold">
             {[
               { name: "Work", href: "/work" },
               { name: "About", href: "/about" },
@@ -57,12 +59,22 @@ const HeaderMenu = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className="group relative py-2 hover:text-white transition-all duration-300"
+                className={`group relative py-2 transition-all duration-300 ${
+                  pathname === item.href
+                    ? "text-white"
+                    : "text-gray-200 hover:text-white"
+                }`}
               >
                 <span className="block group-hover:-translate-y-1 transition-transform duration-300">
                   {item.name}
                 </span>
-                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-white scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
+                <div
+                  className={`absolute bottom-0 left-0 w-full h-[2px] bg-white origin-left transition-transform duration-300 ${
+                    pathname === item.href
+                      ? "scale-x-100"
+                      : "scale-x-0 group-hover:scale-x-100"
+                  }`}
+                />
               </Link>
             ))}
           </nav>
