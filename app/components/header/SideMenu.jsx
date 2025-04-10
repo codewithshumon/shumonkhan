@@ -2,6 +2,7 @@
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import Link from "next/link";
+import { FaLinkedin, FaFacebook, FaYoutube } from "react-icons/fa";
 
 const SideMenu = ({ isMenuOpen, toggleMenu }) => {
   const colors = ["#a63607", "#06a19c", "#4239c4", "#b83364"];
@@ -15,7 +16,20 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
   const socialHeadingRef = useRef();
 
   const navigationItems = ["Work", "About", "Contact"];
-  const socialItems = ["LinkedIn", "Facebook", "YouTube"];
+  const socialItems = [
+    {
+      text: "LinkedIn",
+      link: "https://www.linkedin.com/in/shumon-khan",
+    },
+    {
+      text: "Facebook",
+      link: "https://www.facebook.com/shumonkhan",
+    },
+    {
+      text: "YouTube",
+      link: "https://www.youtube.com/@shumonkhan",
+    },
+  ];
 
   useEffect(() => {
     tl.current = gsap.timeline({ paused: true });
@@ -109,7 +123,7 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
 
       <div
         ref={menuPanelRef}
-        className="fixed top-0 right-0 h-screen w-[90vw] sm:w-2/3 lg:w-1/3 shadow-xl z-35 overflow-hidden"
+        className="fixed top-0 right-0 h-screen w-[90vw] sm:w-[50vw] lg:w-[35vw] shadow-xl z-35 overflow-hidden"
         style={{ transform: "translateX(100%)" }}
       >
         <div className="relative h-full w-full">
@@ -125,22 +139,26 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
 
         <div
           ref={contentRef}
-          className="absolute inset-0 p-20 bg-[#1C1D20] opacity-0 pb-10 pt-20 flex flex-col justify-between"
+          className="absolute inset-0 p-8 md:p-12 lg:p-20 bg-[#1C1D20] opacity-0 pb-8 lg:pb-10 pt-16 lg:pt-20 flex flex-col justify-between"
         >
           {/* Navigation Section */}
-          <div className="flex flex-col space-y-6">
+          <div className="flex flex-col">
             <h2
               ref={navHeadingRef}
-              className="text-xs font-bold mb-4 border-b border-[#808082] py-5 text-[#808082] uppercase"
+              className="text-xs font-bold mb-2 md:mb-4 border-b border-[#808082] py-3 md:py-5 text-[#808082] uppercase"
             >
               Navigation
             </h2>
-            <ul className="flex flex-col space-y-4">
+            <ul className="flex flex-col">
               {navigationItems.map((item, index) => (
-                <li key={item} ref={(el) => setMenuItemRef(el, index)}>
+                <li
+                  key={item}
+                  ref={(el) => setMenuItemRef(el, index)}
+                  className="leading-none my-0"
+                >
                   <Link
                     href={`/${item.toLowerCase()}`}
-                    className="block py-2  text-white hover:text-blue-400 transition-colors"
+                    className="block py-1 text-white hover:text-blue-400 transition-colors text-[3rem] font-semibold hover:pl-2 leading-none"
                     onClick={toggleMenu}
                   >
                     {item}
@@ -151,27 +169,29 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
           </div>
 
           {/* Social Section */}
-          <div className="mt-16 flex flex-col space-y-1">
+          <div className="mt-8 md:mt-16 flex flex-col space-y-4">
             <h2
               ref={socialHeadingRef}
-              className="text-xs font-bold  text-[#808082] uppercase"
+              className="text-xs font-bold mb-2 text-[#808082] uppercase"
             >
-              Social
+              Connect With Me
             </h2>
-            <ul className="flex flex-row gap-x-8">
+            <ul className="flex flex-row flex-wrap gap-4 md:gap-6">
               {socialItems.map((item, index) => (
                 <li
-                  key={item}
+                  key={index}
                   ref={(el) =>
                     setMenuItemRef(el, navigationItems.length + index)
                   }
                 >
                   <Link
-                    href={`/${item.toLowerCase()}`}
-                    className="block py-2 text-white hover:text-blue-400 transition-colors whitespace-nowrap"
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center py-2 text-white hover:text-blue-400 "
                     onClick={toggleMenu}
                   >
-                    {item}
+                    <span className="text-sm md:text-base">{item.text}</span>
                   </Link>
                 </li>
               ))}
