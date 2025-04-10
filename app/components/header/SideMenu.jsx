@@ -11,14 +11,11 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
   const contentRef = useRef();
   const menuItemsRef = useRef([]);
   const tl = useRef();
+  const navHeadingRef = useRef();
+  const socialHeadingRef = useRef();
 
-  const setColorLayerRef = (el, index) => {
-    colorLayersRef.current[index] = el;
-  };
-
-  const setMenuItemRef = (el, index) => {
-    menuItemsRef.current[index] = el;
-  };
+  const navigationItems = ["Work", "About", "Contact"];
+  const socialItems = ["LinkedIn", "Facebook", "YouTube"];
 
   useEffect(() => {
     tl.current = gsap.timeline({ paused: true });
@@ -31,7 +28,7 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
       0
     );
 
-    // Menu panel slide-in from right
+    // Menu panel animation
     tl.current.fromTo(
       menuPanelRef.current,
       { x: "100%" },
@@ -39,17 +36,12 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
       0
     );
 
-    // Color layers animation (all from right)
+    // Color layers animation
     colorLayersRef.current.forEach((layer, index) => {
       tl.current.fromTo(
         layer,
-        { x: "100%" }, // Start from right
-        {
-          x: "0%",
-          duration: 0.4,
-          delay: index * 0.15,
-          ease: "power2.out",
-        },
+        { x: "100%" },
+        { x: "0%", duration: 0.4, delay: index * 0.15, ease: "power2.out" },
         0
       );
     });
@@ -62,16 +54,35 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
       0
     );
 
-    // Menu items animation (from right)
+    // Headings animation
+    [navHeadingRef.current, socialHeadingRef.current].forEach(
+      (heading, index) => {
+        tl.current.fromTo(
+          heading,
+          { opacity: 0, x: 100 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.3,
+            delay: colors.length * 0.15 + 0.2 + index * 0.2,
+            willChange: "transform, opacity",
+          },
+          0
+        );
+      }
+    );
+
+    // Menu items animation
     menuItemsRef.current.forEach((item, index) => {
       tl.current.fromTo(
         item,
-        { opacity: 0, x: 100 }, // Start further from right
+        { opacity: 0, x: 100 },
         {
           opacity: 1,
           x: 0,
           duration: 0.3,
           delay: colors.length * 0.15 + 0.3 + index * 0.1,
+          willChange: "transform, opacity",
         },
         0
       );
@@ -84,6 +95,10 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
     isMenuOpen ? tl.current.play() : tl.current.reverse();
   }, [isMenuOpen]);
 
+  const setMenuItemRef = (el, index) => {
+    menuItemsRef.current[index] = el;
+  };
+
   return (
     <>
       <div
@@ -94,19 +109,16 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
 
       <div
         ref={menuPanelRef}
-        className="fixed top-0 right-0 h-screen w-[90vw] sm:w-2/3 lg:w-1/3 shadow-xl z-35 overflow-hidden"
+        className="fixed top-0 right-0 h-screen w-[90vw] sm:w-2/3 lg:w-1/3 shadow-xl z-40 overflow-hidden"
         style={{ transform: "translateX(100%)" }}
       >
         <div className="relative h-full w-full">
           {colors.map((color, index) => (
             <div
               key={index}
-              ref={(el) => setColorLayerRef(el, index)}
+              ref={(el) => (colorLayersRef.current[index] = el)}
               className="absolute inset-0"
-              style={{
-                backgroundColor: color,
-                transform: "translateX(100%)", // Start off-screen to the right
-              }}
+              style={{ backgroundColor: color, transform: "translateX(100%)" }}
             />
           ))}
         </div>
@@ -115,20 +127,17 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
           ref={contentRef}
           className="absolute inset-0 p-20 bg-[#1C1D20] opacity-0"
         >
-          <div>
-            <h2 className="text-xs font-bold mb-4  border-b border-[#808082] py-5 text-[#808082] uppercase">
+          {/* Navigation Section */}
+          <div className="flex flex-col space-y-6">
+            <h2
+              ref={navHeadingRef}
+              className="text-xs font-bold mb-4 border-b border-[#808082] py-5 text-[#808082] uppercase"
+            >
               Navigation
             </h2>
-            <ul className="space-y-2">
-              {["Work", "About", "Contact"].map((item, index) => (
-                <li
-                  key={item}
-                  ref={(el) => setMenuItemRef(el, index)}
-                  style={{
-                    opacity: 0,
-                    transform: "translateX(100px)",
-                  }}
-                >
+            <ul className="flex flex-col space-y-4">
+              {navigationItems.map((item, index) => (
+                <li key={item} ref={(el) => setMenuItemRef(el, index)}>
                   <Link
                     href={`/${item.toLowerCase()}`}
                     className="block py-2  text-white hover:text-blue-400 transition-colors"
@@ -140,23 +149,26 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
               ))}
             </ul>
           </div>
-          <div>
-            <h2 className="text-xs font-bold mb-4  border-b border-[#808082] py-5 text-[#808082] uppercase">
+
+          {/* Social Section */}
+          <div className="mt-16 flex flex-col space-y-6">
+            <h2
+              ref={socialHeadingRef}
+              className="text-xs font-bold mb-4 border-b border-[#808082] py-5 text-[#808082] uppercase"
+            >
               Social
             </h2>
-            <ul className="space-y-2 flex flex-row">
-              {["Work", "About", "Contact"].map((item, index) => (
+            <ul className="flex flex-row gap-x-8">
+              {socialItems.map((item, index) => (
                 <li
                   key={item}
-                  ref={(el) => setMenuItemRef(el, index)}
-                  style={{
-                    opacity: 0,
-                    transform: "translateX(100px)",
-                  }}
+                  ref={(el) =>
+                    setMenuItemRef(el, navigationItems.length + index)
+                  }
                 >
                   <Link
                     href={`/${item.toLowerCase()}`}
-                    className="block py-2  text-white hover:text-blue-400 transition-colors"
+                    className="block py-2 text-white hover:text-blue-400 transition-colors whitespace-nowrap"
                     onClick={toggleMenu}
                   >
                     {item}
