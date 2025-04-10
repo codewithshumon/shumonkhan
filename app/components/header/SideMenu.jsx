@@ -109,7 +109,7 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
 
       <div
         ref={menuPanelRef}
-        className="fixed top-0 right-0 h-screen w-[90vw] sm:w-2/3 lg:w-1/3 shadow-xl z-40 overflow-hidden"
+        className="fixed top-0 right-0 h-screen w-[90vw] sm:w-2/3 lg:w-1/3 shadow-xl z-35 overflow-hidden"
         style={{ transform: "translateX(100%)" }}
       >
         <div className="relative h-full w-full">
@@ -125,7 +125,7 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
 
         <div
           ref={contentRef}
-          className="absolute inset-0 p-20 bg-[#1C1D20] opacity-0"
+          className="absolute inset-0 p-20 bg-[#1C1D20] opacity-0 pb-10 pt-20 flex flex-col justify-between"
         >
           {/* Navigation Section */}
           <div className="flex flex-col space-y-6">
@@ -151,10 +151,10 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
           </div>
 
           {/* Social Section */}
-          <div className="mt-16 flex flex-col space-y-6">
+          <div className="mt-16 flex flex-col space-y-1">
             <h2
               ref={socialHeadingRef}
-              className="text-xs font-bold mb-4 border-b border-[#808082] py-5 text-[#808082] uppercase"
+              className="text-xs font-bold  text-[#808082] uppercase"
             >
               Social
             </h2>
