@@ -15,7 +15,8 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
   const navHeadingRef = useRef();
   const socialHeadingRef = useRef();
 
-  const navigationItems = ["Work", "About", "Contact"];
+  // Added "Home" as the first navigation item
+  const navigationItems = ["Home", "Work", "About", "Contact"];
   const socialItems = [
     {
       text: "LinkedIn",
@@ -157,7 +158,7 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
                   className="leading-none my-0"
                 >
                   <Link
-                    href={`/${item.toLowerCase()}`}
+                    href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
                     className="block py-1 text-white hover:text-blue-400 transition-colors text-[3rem] font-semibold hover:pl-2 leading-none"
                     onClick={toggleMenu}
                   >
