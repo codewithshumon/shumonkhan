@@ -98,7 +98,7 @@ const HeaderMenu = () => {
           >
             <button
               onClick={toggleMenu}
-              className="w-18 h-18 rounded-full bg-blue-500 shadow-lg flex flex-col items-center justify-center gap-1.5 hover:bg-blue-600 transition-colors cursor-pointer"
+              className="w-18 h-18 rounded-full bg-[#3c32be] shadow-lg flex flex-col items-center justify-center gap-1.5 hover:bg-[#4a41c7] transition-colors cursor-pointer"
             >
               <motion.div
                 className="h-[2px] w-[25px] bg-white rounded-full"
