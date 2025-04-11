@@ -2,7 +2,6 @@
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import Link from "next/link";
-import { FaLinkedin, FaFacebook, FaYoutube } from "react-icons/fa";
 
 const SideMenu = ({ isMenuOpen, toggleMenu }) => {
   const colors = ["#a63607", "#06a19c", "#4239c4", "#b83364"];
@@ -114,6 +113,56 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
     menuItemsRef.current[index] = el;
   };
 
+  const handleHover = (index, isHovering) => {
+    const item = menuItemsRef.current[index];
+    if (!item) return;
+
+    const link = item.querySelector("a");
+    const bullet = document.createElement("span");
+    bullet.textContent = "•";
+    bullet.className =
+      "bullet-point absolute left-0 opacity-0 transition-opacity duration-200";
+
+    if (isHovering) {
+      // Add bullet if not already there
+      if (!item.querySelector(".bullet-point")) {
+        link.style.position = "relative";
+        link.style.paddingLeft = "1.5rem";
+        link.insertBefore(bullet, link.firstChild);
+      }
+
+      gsap.to(link, {
+        x: 15,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+
+      gsap.to(item.querySelector(".bullet-point"), {
+        opacity: 1,
+        duration: 0.2,
+        delay: 0.1,
+      });
+    } else {
+      gsap.to(link, {
+        x: 0,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+
+      gsap.to(item.querySelector(".bullet-point"), {
+        opacity: 0,
+        duration: 0.1,
+        onComplete: () => {
+          const bullet = item.querySelector(".bullet-point");
+          if (bullet) {
+            link.style.paddingLeft = "0";
+            bullet.remove();
+          }
+        },
+      });
+    }
+  };
+
   return (
     <>
       <div
@@ -148,18 +197,20 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
               ref={navHeadingRef}
               className="text-xs font-bold mb-2 md:mb-4 border-b border-[#808082] py-3 md:py-5 text-[#808082] uppercase"
             >
-              Navigation
+              Explore
             </h2>
             <ul className="flex flex-col">
               {navigationItems.map((item, index) => (
                 <li
                   key={item}
                   ref={(el) => setMenuItemRef(el, index)}
-                  className="leading-none my-0"
+                  className="leading-none my-0 overflow-hidden"
+                  onMouseEnter={() => handleHover(index, true)}
+                  onMouseLeave={() => handleHover(index, false)}
                 >
                   <Link
                     href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                    className="block py-1 text-white hover:text-blue-400 transition-colors text-[3rem] font-semibold hover:pl-2 leading-none"
+                    className="block py-1 text-[#c9c9c9] hover:text-white transition-colors text-[3rem] font-semibold leading-none relative"
                     onClick={toggleMenu}
                   >
                     {item}
@@ -189,7 +240,7 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center py-2 text-white hover:text-blue-400 "
+                    className="flex items-center py-2 text-[#c9c9c9] hover:text-white"
                     onClick={toggleMenu}
                   >
                     <span className="text-sm md:text-base">{item.text}</span>
