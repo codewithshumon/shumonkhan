@@ -15,7 +15,8 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
   const tl = useRef();
   const navHeadingRef = useRef();
   const socialHeadingRef = useRef();
-  const [hoveredHref, setHoveredHref] = useState(null);
+  const [hoveredNavItem, setHoveredNavItem] = useState(null);
+  const [hoveredSocialItem, setHoveredSocialItem] = useState(null);
 
   // Navigation items
   const navigationItems = [
@@ -168,20 +169,20 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
                   >
                     <Link
                       href={item.href}
-                      onMouseEnter={() => setHoveredHref(item.href)}
-                      onMouseLeave={() => setHoveredHref(null)}
+                      onMouseEnter={() => setHoveredNavItem(item.href)}
+                      onMouseLeave={() => setHoveredNavItem(null)}
                       className={`py-1 transition-all duration-300 flex gap-2 text-[3rem] font-semibold leading-none relative ${
-                        (item.href === pathname && !hoveredHref) ||
-                        hoveredHref === item.href
-                          ? "text-white translate-x-4"
-                          : "text-[#c9c9c9] group-hover:translate-x-4"
+                        (item.href === pathname && !hoveredNavItem) ||
+                        hoveredNavItem === item.href
+                          ? "text-white translate-x-7"
+                          : "text-[#c9c9c9] group-hover:translate-x-7"
                       }`}
                       onClick={toggleMenu}
                     >
                       <div
                         className={`absolute left-[-10%] transition-opacity duration-300 ${
-                          (item.href === pathname && !hoveredHref) ||
-                          hoveredHref === item.href
+                          (item.href === pathname && !hoveredNavItem) ||
+                          hoveredNavItem === item.href
                             ? "opacity-100"
                             : "opacity-0"
                         }`}
@@ -217,19 +218,21 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    onMouseEnter={() => setHoveredHref(item.link)}
-                    onMouseLeave={() => setHoveredHref(null)}
-                    className={`flex items-center py-2 relative transition-all duration-300 ${
-                      item.link === hoveredHref
-                        ? "text-white translate-x-2"
-                        : "text-[#c9c9c9] hover:translate-x-2"
+                    onMouseEnter={() => setHoveredSocialItem(item.link)}
+                    onMouseLeave={() => setHoveredSocialItem(null)}
+                    className={`flex items-center py-2 relative ${
+                      item.link === hoveredSocialItem
+                        ? "text-white"
+                        : "text-[#c9c9c9]"
                     }`}
                     onClick={toggleMenu}
                   >
                     <span className="text-sm md:text-base">{item.text}</span>
                     <div
                       className={`absolute bottom-0 left-0 w-full h-[2px] bg-white origin-left transition-transform duration-300 ${
-                        item.link === hoveredHref ? "scale-x-100" : "scale-x-0"
+                        item.link === hoveredSocialItem
+                          ? "scale-x-100"
+                          : "scale-x-0"
                       }`}
                     />
                   </Link>
