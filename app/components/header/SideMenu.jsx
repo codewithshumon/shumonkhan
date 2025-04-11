@@ -15,8 +15,7 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
   const tl = useRef();
   const navHeadingRef = useRef();
   const socialHeadingRef = useRef();
-  const [hoveredSocial, setHoveredSocial] = useState(null);
-  const [hoveredNav, setHoveredNav] = useState(null);
+  const [hoveredHref, setHoveredHref] = useState(null);
 
   // Navigation items
   const navigationItems = [
@@ -118,71 +117,8 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
     isMenuOpen ? tl.current.play() : tl.current.reverse();
   }, [isMenuOpen]);
 
-  useEffect(() => {
-    if (isMenuOpen) {
-      const timer = setTimeout(() => {
-        navigationItems.forEach((item, index) => {
-          if (item.href === pathname) {
-            handleHover(index, true, true);
-          }
-        });
-      }, 500);
-
-      return () => clearTimeout(timer);
-    }
-  }, [isMenuOpen, pathname]);
-
   const setMenuItemRef = (el, index) => {
     menuItemsRef.current[index] = el;
-  };
-
-  const handleHover = (index, isHovering, isActive = false) => {
-    const item = menuItemsRef.current[index];
-    if (!item) return;
-
-    const link = item.querySelector("a");
-    let bullet = item.querySelector(".bullet-point");
-
-    if ((isHovering || isActive) && !bullet) {
-      bullet = document.createElement("span");
-      bullet.textContent = "•";
-      bullet.className =
-        "bullet-point absolute left-0 transition-opacity duration-200";
-      link.style.position = "relative";
-      link.style.paddingLeft = "1.5rem";
-      link.insertBefore(bullet, link.firstChild);
-    }
-
-    const shouldShowBullet = isHovering || isActive;
-    const targetOpacity = shouldShowBullet ? 1 : 0;
-    const targetX = shouldShowBullet ? 15 : 0;
-
-    gsap.to(link, {
-      x: targetX,
-      duration: 0.3,
-      ease: "power2.out",
-    });
-
-    if (bullet) {
-      gsap.to(bullet, {
-        opacity: targetOpacity,
-        duration: 0.2,
-        delay: shouldShowBullet ? 0.1 : 0,
-      });
-    }
-
-    if (!isHovering && !isActive && bullet) {
-      gsap.to(bullet, {
-        opacity: 0,
-        duration: 0.1,
-        onComplete: () => {
-          if (bullet && !isActive) {
-            link.style.paddingLeft = "0";
-            bullet.remove();
-          }
-        },
-      });
-    }
   };
 
   return (
@@ -228,28 +164,31 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
                   <li
                     key={item.name}
                     ref={(el) => setMenuItemRef(el, index)}
-                    className="leading-none my-0 overflow-hidden"
-                    onMouseEnter={() => {
-                      setHoveredNav(item.href);
-                      handleHover(index, true);
-                    }}
-                    onMouseLeave={() => {
-                      setHoveredNav(null);
-                      if (!isActive) {
-                        handleHover(index, false);
-                      }
-                    }}
+                    className="leading-none my-0 group"
                   >
                     <Link
                       href={item.href}
-                      className={`block py-1 transition-colors text-[3rem] font-semibold leading-none relative ${
-                        isActive || hoveredNav === item.href
-                          ? "text-white"
-                          : "text-[#c9c9c9] hover:text-white"
+                      onMouseEnter={() => setHoveredHref(item.href)}
+                      onMouseLeave={() => setHoveredHref(null)}
+                      className={`py-1 transition-all duration-300 flex gap-2 text-[3rem] font-semibold leading-none relative ${
+                        (item.href === pathname && !hoveredHref) ||
+                        hoveredHref === item.href
+                          ? "text-white translate-x-4"
+                          : "text-[#c9c9c9] group-hover:translate-x-4"
                       }`}
                       onClick={toggleMenu}
                     >
-                      {item.name}
+                      <div
+                        className={`absolute left-[-10%] transition-opacity duration-300 ${
+                          (item.href === pathname && !hoveredHref) ||
+                          hoveredHref === item.href
+                            ? "opacity-100"
+                            : "opacity-0"
+                        }`}
+                      >
+                        •
+                      </div>
+                      <span>{item.name}</span>
                     </Link>
                   </li>
                 );
@@ -278,15 +217,19 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center py-2 text-[#c9c9c9] hover:text-white relative group"
+                    onMouseEnter={() => setHoveredHref(item.link)}
+                    onMouseLeave={() => setHoveredHref(null)}
+                    className={`flex items-center py-2 relative transition-all duration-300 ${
+                      item.link === hoveredHref
+                        ? "text-white translate-x-2"
+                        : "text-[#c9c9c9] hover:translate-x-2"
+                    }`}
                     onClick={toggleMenu}
-                    onMouseEnter={() => setHoveredSocial(index)}
-                    onMouseLeave={() => setHoveredSocial(null)}
                   >
                     <span className="text-sm md:text-base">{item.text}</span>
                     <div
                       className={`absolute bottom-0 left-0 w-full h-[2px] bg-white origin-left transition-transform duration-300 ${
-                        hoveredSocial === index ? "scale-x-100" : "scale-x-0"
+                        item.link === hoveredHref ? "scale-x-100" : "scale-x-0"
                       }`}
                     />
                   </Link>
