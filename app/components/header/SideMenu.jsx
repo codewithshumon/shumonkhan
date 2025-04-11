@@ -1,9 +1,11 @@
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const SideMenu = ({ isMenuOpen, toggleMenu }) => {
+  const pathname = usePathname();
   const colors = ["#a63607", "#06a19c", "#4239c4", "#b83364"];
   const overlayRef = useRef();
   const menuPanelRef = useRef();
@@ -13,9 +15,16 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
   const tl = useRef();
   const navHeadingRef = useRef();
   const socialHeadingRef = useRef();
+  const [hoveredSocial, setHoveredSocial] = useState(null);
+  const [hoveredNav, setHoveredNav] = useState(null);
 
-  // Added "Home" as the first navigation item
-  const navigationItems = ["Home", "Work", "About", "Contact"];
+  // Navigation items
+  const navigationItems = [
+    { name: "Home", href: "/" },
+    { name: "Work", href: "/work" },
+    { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" },
+  ];
   const socialItems = [
     {
       text: "LinkedIn",
@@ -109,52 +118,65 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
     isMenuOpen ? tl.current.play() : tl.current.reverse();
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    if (isMenuOpen) {
+      const timer = setTimeout(() => {
+        navigationItems.forEach((item, index) => {
+          if (item.href === pathname) {
+            handleHover(index, true, true);
+          }
+        });
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isMenuOpen, pathname]);
+
   const setMenuItemRef = (el, index) => {
     menuItemsRef.current[index] = el;
   };
 
-  const handleHover = (index, isHovering) => {
+  const handleHover = (index, isHovering, isActive = false) => {
     const item = menuItemsRef.current[index];
     if (!item) return;
 
     const link = item.querySelector("a");
-    const bullet = document.createElement("span");
-    bullet.textContent = "•";
-    bullet.className =
-      "bullet-point absolute left-0 opacity-0 transition-opacity duration-200";
+    let bullet = item.querySelector(".bullet-point");
 
-    if (isHovering) {
-      // Add bullet if not already there
-      if (!item.querySelector(".bullet-point")) {
-        link.style.position = "relative";
-        link.style.paddingLeft = "1.5rem";
-        link.insertBefore(bullet, link.firstChild);
-      }
+    if ((isHovering || isActive) && !bullet) {
+      bullet = document.createElement("span");
+      bullet.textContent = "•";
+      bullet.className =
+        "bullet-point absolute left-0 transition-opacity duration-200";
+      link.style.position = "relative";
+      link.style.paddingLeft = "1.5rem";
+      link.insertBefore(bullet, link.firstChild);
+    }
 
-      gsap.to(link, {
-        x: 15,
-        duration: 0.3,
-        ease: "power2.out",
-      });
+    const shouldShowBullet = isHovering || isActive;
+    const targetOpacity = shouldShowBullet ? 1 : 0;
+    const targetX = shouldShowBullet ? 15 : 0;
 
-      gsap.to(item.querySelector(".bullet-point"), {
-        opacity: 1,
+    gsap.to(link, {
+      x: targetX,
+      duration: 0.3,
+      ease: "power2.out",
+    });
+
+    if (bullet) {
+      gsap.to(bullet, {
+        opacity: targetOpacity,
         duration: 0.2,
-        delay: 0.1,
+        delay: shouldShowBullet ? 0.1 : 0,
       });
-    } else {
-      gsap.to(link, {
-        x: 0,
-        duration: 0.3,
-        ease: "power2.out",
-      });
+    }
 
-      gsap.to(item.querySelector(".bullet-point"), {
+    if (!isHovering && !isActive && bullet) {
+      gsap.to(bullet, {
         opacity: 0,
         duration: 0.1,
         onComplete: () => {
-          const bullet = item.querySelector(".bullet-point");
-          if (bullet) {
+          if (bullet && !isActive) {
             link.style.paddingLeft = "0";
             bullet.remove();
           }
@@ -200,23 +222,38 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
               Explore
             </h2>
             <ul className="flex flex-col">
-              {navigationItems.map((item, index) => (
-                <li
-                  key={item}
-                  ref={(el) => setMenuItemRef(el, index)}
-                  className="leading-none my-0 overflow-hidden"
-                  onMouseEnter={() => handleHover(index, true)}
-                  onMouseLeave={() => handleHover(index, false)}
-                >
-                  <Link
-                    href={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                    className="block py-1 text-[#c9c9c9] hover:text-white transition-colors text-[3rem] font-semibold leading-none relative"
-                    onClick={toggleMenu}
+              {navigationItems.map((item, index) => {
+                const isActive = item.href === pathname;
+                return (
+                  <li
+                    key={item.name}
+                    ref={(el) => setMenuItemRef(el, index)}
+                    className="leading-none my-0 overflow-hidden"
+                    onMouseEnter={() => {
+                      setHoveredNav(item.href);
+                      handleHover(index, true);
+                    }}
+                    onMouseLeave={() => {
+                      setHoveredNav(null);
+                      if (!isActive) {
+                        handleHover(index, false);
+                      }
+                    }}
                   >
-                    {item}
-                  </Link>
-                </li>
-              ))}
+                    <Link
+                      href={item.href}
+                      className={`block py-1 transition-colors text-[3rem] font-semibold leading-none relative ${
+                        isActive || hoveredNav === item.href
+                          ? "text-white"
+                          : "text-[#c9c9c9] hover:text-white"
+                      }`}
+                      onClick={toggleMenu}
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
@@ -235,15 +272,23 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
                   ref={(el) =>
                     setMenuItemRef(el, navigationItems.length + index)
                   }
+                  className="relative"
                 >
                   <Link
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center py-2 text-[#c9c9c9] hover:text-white"
+                    className="flex items-center py-2 text-[#c9c9c9] hover:text-white relative group"
                     onClick={toggleMenu}
+                    onMouseEnter={() => setHoveredSocial(index)}
+                    onMouseLeave={() => setHoveredSocial(null)}
                   >
                     <span className="text-sm md:text-base">{item.text}</span>
+                    <div
+                      className={`absolute bottom-0 left-0 w-full h-[2px] bg-white origin-left transition-transform duration-300 ${
+                        hoveredSocial === index ? "scale-x-100" : "scale-x-0"
+                      }`}
+                    />
                   </Link>
                 </li>
               ))}
