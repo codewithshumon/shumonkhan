@@ -16,7 +16,6 @@ const colors = [
 
 const PageTransition = () => {
   const pathname = usePathname();
-  const transitionRef = useRef();
   const colorLayersRef = useRef([]);
   const divRef = useRef();
   const tl = useRef();
@@ -29,52 +28,56 @@ const PageTransition = () => {
 
     const group1 = colorLayersRef.current.slice(0, 4);
     const group2 = colorLayersRef.current.slice(4);
+    const group1Duration = 2 + (4 - 1) * 0.15; // 2.45s
 
-    // First group animation
-    tl.current.to(group1, {
-      y: "-100%",
-      duration: 2,
-      stagger: 0.15,
-    });
+    // First group animation with loading div
+    tl.current.to(
+      group1,
+      {
+        y: "-100%",
+        duration: 2,
+        stagger: 0.15,
+      },
+      "firstGroup"
+    );
 
-    // Loading div animation (bottom to top)
     tl.current.to(
       divRef.current,
       {
         y: "0%",
+        duration: group1Duration,
+      },
+      "firstGroup"
+    );
+
+    // Pause at top
+    tl.current.to({}, { duration: 1 });
+
+    // Synchronized exit and second group animation
+    tl.current.add("exitStart");
+    tl.current.to(
+      divRef.current,
+      {
+        y: "-100%",
         duration: 1,
       },
-      "-=0.5"
+      "exitStart"
     );
 
-    // Pause at top for 2 seconds
     tl.current.to(
-      {},
+      group2,
       {
-        duration: 2,
-      }
+        y: "-100%",
+        duration: 1,
+        stagger: 0.1,
+      },
+      "exitStart"
     );
-
-    // Loading div exit (top to offscreen top)
-    tl.current.to(divRef.current, {
-      y: "-100%",
-      duration: 1,
-    });
-
-    // Second group animation
-    tl.current.to(group2, {
-      y: "-100%",
-      duration: 2,
-      stagger: 0.15,
-    });
 
     // Reset all elements
     tl.current.to(
       [colorLayersRef.current, divRef.current],
-      {
-        y: "100%",
-        duration: 0,
-      },
+      { y: "100%", duration: 0 },
       "+=0.5"
     );
 
@@ -88,11 +91,7 @@ const PageTransition = () => {
   }, [pathname]);
 
   return (
-    <div
-      ref={transitionRef}
-      className="fixed inset-0 w-full h-full z-[9999] pointer-events-none"
-    >
-      {/* Color layers */}
+    <div className="fixed inset-0 w-full h-full z-[9999] pointer-events-none">
       {colors.map((color, index) => (
         <div
           key={index}
@@ -101,8 +100,6 @@ const PageTransition = () => {
           style={{ backgroundColor: color }}
         />
       ))}
-
-      {/* Middle div */}
       <div
         ref={divRef}
         className="absolute inset-0 transform translate-y-full flex items-center justify-center text-4xl text-white bg-black"
