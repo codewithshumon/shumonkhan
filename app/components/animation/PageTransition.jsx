@@ -15,31 +15,33 @@ const colors = [
 ];
 
 const PageTransition = ({
-  pauseTime = 0.2, //loading div pause time
+  pauseTime = 0.2,
   group1Duration = 1,
-  group1Stagger = 0.15, //gap between each color layer
+  group1Stagger = 0.15,
   group2Duration = 1,
-  group2Stagger = 0.15, //gap between each color layer
+  group2Stagger = 0.15,
 }) => {
   const pathname = usePathname();
   const colorLayersRef = useRef([]);
   const divRef = useRef();
   const tl = useRef();
+  const initialized = useRef(false);
 
   useEffect(() => {
+    // Set initial positions immediately
+    gsap.set(colorLayersRef.current, { y: "100%" });
+    gsap.set(divRef.current, { y: "100%" });
+
     tl.current = gsap.timeline({
       defaults: { ease: "power2.inOut" },
-      paused: true,
+      paused: !initialized.current,
     });
 
     const group1 = colorLayersRef.current.slice(0, 4);
     const group2 = colorLayersRef.current.slice(4);
-
-    // Calculate total first group animation time
     const totalGroup1Time =
       group1Duration + (group1.length - 1) * group1Stagger;
 
-    // First group animation with loading div
     tl.current.to(
       group1,
       {
@@ -59,10 +61,8 @@ const PageTransition = ({
       "firstGroup"
     );
 
-    // Controlled pause at top
     tl.current.to({}, { duration: pauseTime });
 
-    // Synchronized exit and second group animation
     tl.current.add("exitStart");
     tl.current.to(
       divRef.current,
@@ -83,13 +83,13 @@ const PageTransition = ({
       "exitStart"
     );
 
-    // Reset all elements
     tl.current.to(
       [colorLayersRef.current, divRef.current],
       { y: "100%", duration: 0 },
       "+=0.5"
     );
 
+    initialized.current = true;
     return () => tl.current.kill();
   }, [pauseTime, group1Duration, group1Stagger, group2Duration, group2Stagger]);
 
@@ -100,18 +100,22 @@ const PageTransition = ({
   }, [pathname]);
 
   return (
-    <div className="fixed inset-0 w-full h-full z-[9999] pointer-events-none">
+    <div className="fixed inset-0 w-full h-full z-[9999] pointer-events-none overflow-hidden">
       {colors.map((color, index) => (
         <div
           key={index}
           ref={(el) => (colorLayersRef.current[index] = el)}
-          className="absolute inset-0 w-full h-full transform translate-y-full"
-          style={{ backgroundColor: color }}
+          className="absolute inset-0 w-full h-full"
+          style={{
+            backgroundColor: color,
+            transform: "translateY(100%)",
+          }}
         />
       ))}
       <div
         ref={divRef}
-        className="absolute inset-0 transform translate-y-full flex items-center justify-center text-4xl text-white bg-black"
+        className="absolute inset-0 flex items-center justify-center text-4xl text-white bg-black"
+        style={{ transform: "translateY(100%)" }}
       >
         Loading...
       </div>
