@@ -14,7 +14,13 @@ const colors = [
   "#b83364",
 ];
 
-const PageTransition = () => {
+const PageTransition = ({
+  pauseTime = 0.2, //loading div pause time
+  group1Duration = 1,
+  group1Stagger = 0.15, //gap between each color layer
+  group2Duration = 1,
+  group2Stagger = 0.15, //gap between each color layer
+}) => {
   const pathname = usePathname();
   const colorLayersRef = useRef([]);
   const divRef = useRef();
@@ -28,15 +34,18 @@ const PageTransition = () => {
 
     const group1 = colorLayersRef.current.slice(0, 4);
     const group2 = colorLayersRef.current.slice(4);
-    const group1Duration = 2 + (4 - 1) * 0.15; // 2.45s
+
+    // Calculate total first group animation time
+    const totalGroup1Time =
+      group1Duration + (group1.length - 1) * group1Stagger;
 
     // First group animation with loading div
     tl.current.to(
       group1,
       {
         y: "-100%",
-        duration: 2,
-        stagger: 0.15,
+        duration: group1Duration,
+        stagger: group1Stagger,
       },
       "firstGroup"
     );
@@ -45,13 +54,13 @@ const PageTransition = () => {
       divRef.current,
       {
         y: "0%",
-        duration: group1Duration,
+        duration: totalGroup1Time,
       },
       "firstGroup"
     );
 
-    // Pause at top
-    tl.current.to({}, { duration: 1 });
+    // Controlled pause at top
+    tl.current.to({}, { duration: pauseTime });
 
     // Synchronized exit and second group animation
     tl.current.add("exitStart");
@@ -59,7 +68,7 @@ const PageTransition = () => {
       divRef.current,
       {
         y: "-100%",
-        duration: 1,
+        duration: group2Duration,
       },
       "exitStart"
     );
@@ -68,8 +77,8 @@ const PageTransition = () => {
       group2,
       {
         y: "-100%",
-        duration: 1,
-        stagger: 0.1,
+        duration: group2Duration,
+        stagger: group2Stagger,
       },
       "exitStart"
     );
@@ -82,7 +91,7 @@ const PageTransition = () => {
     );
 
     return () => tl.current.kill();
-  }, []);
+  }, [pauseTime, group1Duration, group1Stagger, group2Duration, group2Stagger]);
 
   useEffect(() => {
     if (pathname && tl.current) {
