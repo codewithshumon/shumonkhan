@@ -37,26 +37,29 @@ const PageTransition = () => {
       stagger: 0.15,
     });
 
-    // Show middle div
+    // Loading div animation (bottom to top)
     tl.current.to(
       divRef.current,
       {
-        opacity: 1,
-        duration: 0,
+        y: "0%",
+        duration: 1,
       },
-      "-=0.5" // Overlap slightly with previous animation
+      "-=0.5"
     );
 
-    // Hide div after 2s
+    // Pause at top for 2 seconds
     tl.current.to(
-      divRef.current,
+      {},
       {
-        opacity: 0,
-        duration: 0,
-        delay: 2,
-      },
-      "+=0" // Wait after showing
+        duration: 2,
+      }
     );
+
+    // Loading div exit (top to offscreen top)
+    tl.current.to(divRef.current, {
+      y: "-100%",
+      duration: 1,
+    });
 
     // Second group animation
     tl.current.to(group2, {
@@ -70,10 +73,9 @@ const PageTransition = () => {
       [colorLayersRef.current, divRef.current],
       {
         y: "100%",
-        opacity: 0,
         duration: 0,
       },
-      "+=0.5" // Short delay before reset
+      "+=0.5"
     );
 
     return () => tl.current.kill();
@@ -103,7 +105,7 @@ const PageTransition = () => {
       {/* Middle div */}
       <div
         ref={divRef}
-        className="absolute inset-0 flex items-center justify-center text-4xl text-white opacity-0 bg-black"
+        className="absolute inset-0 transform translate-y-full flex items-center justify-center text-4xl text-white bg-black"
       >
         Loading...
       </div>
