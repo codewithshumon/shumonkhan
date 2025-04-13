@@ -22,7 +22,7 @@ const PageTransition = () => {
         layer,
         {
           y: "-100%",
-          duration: 0.6,
+          duration: 2,
           delay: index * 0.15,
         },
         0
