@@ -3,45 +3,84 @@ import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { usePathname } from "next/navigation";
 
-const colors = ["#a63607", "#06a19c", "#4239c4", "#b83364"];
+const colors = [
+  "#a63607",
+  "#06a19c",
+  "#4239c4",
+  "#b83364",
+  "#a63607",
+  "#06a19c",
+  "#4239c4",
+  "#b83364",
+];
 
 const PageTransition = () => {
   const pathname = usePathname();
   const transitionRef = useRef();
   const colorLayersRef = useRef([]);
+  const divRef = useRef();
   const tl = useRef();
 
   useEffect(() => {
     tl.current = gsap.timeline({
       defaults: { ease: "power2.inOut" },
+      paused: true,
     });
 
-    // Animate each color layer from bottom to top
-    colorLayersRef.current.forEach((layer, index) => {
-      tl.current.to(
-        layer,
-        {
-          y: "-100%",
-          duration: 2,
-          delay: index * 0.15,
-        },
-        0
-      );
+    const group1 = colorLayersRef.current.slice(0, 4);
+    const group2 = colorLayersRef.current.slice(4);
+
+    // First group animation
+    tl.current.to(group1, {
+      y: "-100%",
+      duration: 2,
+      stagger: 0.15,
     });
 
-    // Reset position after animation
-    tl.current.to(colorLayersRef.current, {
-      y: "100%",
-      duration: 0,
-      delay: 0.5,
+    // Show middle div
+    tl.current.to(
+      divRef.current,
+      {
+        opacity: 1,
+        duration: 0,
+      },
+      "-=0.5" // Overlap slightly with previous animation
+    );
+
+    // Hide div after 2s
+    tl.current.to(
+      divRef.current,
+      {
+        opacity: 0,
+        duration: 0,
+        delay: 2,
+      },
+      "+=0" // Wait after showing
+    );
+
+    // Second group animation
+    tl.current.to(group2, {
+      y: "-100%",
+      duration: 2,
+      stagger: 0.15,
     });
+
+    // Reset all elements
+    tl.current.to(
+      [colorLayersRef.current, divRef.current],
+      {
+        y: "100%",
+        opacity: 0,
+        duration: 0,
+      },
+      "+=0.5" // Short delay before reset
+    );
 
     return () => tl.current.kill();
   }, []);
 
   useEffect(() => {
-    // Play animation on route change
-    if (transitionRef.current) {
+    if (pathname && tl.current) {
       tl.current.restart();
     }
   }, [pathname]);
@@ -51,6 +90,7 @@ const PageTransition = () => {
       ref={transitionRef}
       className="fixed inset-0 w-full h-full z-[9999] pointer-events-none"
     >
+      {/* Color layers */}
       {colors.map((color, index) => (
         <div
           key={index}
@@ -59,6 +99,14 @@ const PageTransition = () => {
           style={{ backgroundColor: color }}
         />
       ))}
+
+      {/* Middle div */}
+      <div
+        ref={divRef}
+        className="absolute inset-0 flex items-center justify-center text-4xl text-white opacity-0 bg-black"
+      >
+        Loading...
+      </div>
     </div>
   );
 };
