@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import {
   motion,
@@ -9,7 +9,7 @@ import {
   useScroll,
   useMotionValueEvent,
 } from "framer-motion";
-import Link from "next/link";
+
 import SideMenu from "./SideMenu";
 import {
   resetPageTransition,
@@ -22,13 +22,16 @@ const HeaderMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [hoveredHref, setHoveredHref] = useState(null);
+  const router = useRouter();
   const dispatch = useDispatch();
   const { scrollY } = useScroll();
 
-  const handlePageTransition = useCallback((e) => {
+  const handlePageTransition = useCallback((e, href) => {
     e.preventDefault();
     dispatch(triggerPageTransition());
+
     setTimeout(() => {
+      router.push(href);
       dispatch(resetPageTransition());
     }, 3000);
   }, []);
@@ -70,13 +73,13 @@ const HeaderMenu = () => {
               { name: "About", href: "/about" },
               { name: "Contact", href: "/contact" },
             ].map((item) => (
-              <Link
+              <div
                 key={item.name}
                 href={item.href}
-                onClick={(e) => handlePageTransition(e)}
+                onClick={(e) => handlePageTransition(e, item.href)}
                 onMouseEnter={() => setHoveredHref(item.href)}
                 onMouseLeave={() => setHoveredHref(null)}
-                className={`group relative py-2 transition-all duration-300 ${
+                className={`group relative py-2 transition-all duration-300 cursor-pointer ${
                   (item.href === pathname && !hoveredHref) ||
                   hoveredHref === item.href
                     ? "text-white"
@@ -94,7 +97,7 @@ const HeaderMenu = () => {
                       : "scale-x-0"
                   }`}
                 />
-              </Link>
+              </div>
             ))}
           </nav>
         </motion.div>

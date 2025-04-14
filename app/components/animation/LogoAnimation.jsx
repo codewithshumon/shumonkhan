@@ -3,8 +3,9 @@
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import AnimatedTextAboutMe from "./AnimatedTextAboutMe";
-import Link from "next/link";
+
 import {
   resetPageTransition,
   triggerPageTransition,
@@ -33,6 +34,7 @@ export default function LogoAnimation() {
   const [greetingIntervalId, setGreetingIntervalId] = useState(null);
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   // Handle page transition with proper navigation
   const handlePageTransition = useCallback((e) => {
@@ -40,6 +42,7 @@ export default function LogoAnimation() {
     dispatch(triggerPageTransition());
 
     setTimeout(() => {
+      router.push("/");
       dispatch(resetPageTransition());
     }, [3000]);
   }, []);
@@ -137,14 +140,14 @@ export default function LogoAnimation() {
               borderWidth: animationStarted ? "2px" : "4px",
             }}
           >
-            <Link href="/" onClick={handlePageTransition}>
+            <div onClick={handlePageTransition} className=" cursor-pointer">
               <Image
                 src="https://avatar.iran.liara.run/public/boy"
                 alt="Profile"
                 fill
                 className="object-cover"
               />
-            </Link>
+            </div>
           </motion.div>
 
           {/* Circular Progress Bar - only visible during initial load */}

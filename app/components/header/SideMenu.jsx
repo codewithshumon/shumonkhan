@@ -3,7 +3,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   resetPageTransition,
   triggerPageTransition,
@@ -23,6 +23,7 @@ const SideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   const [hoveredNavItem, setHoveredNavItem] = useState(null);
   const [hoveredSocialItem, setHoveredSocialItem] = useState(null);
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const navigationItems = [
     { name: "Home", href: "/" },
@@ -46,7 +47,7 @@ const SideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
     },
   ];
 
-  const handlePageTransition = useCallback((e) => {
+  const handlePageTransition = useCallback((e, href) => {
     e.preventDefault();
     setTimeout(() => {
       dispatch(triggerPageTransition());
@@ -54,6 +55,7 @@ const SideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
 
     setIsMenuOpen(false);
     setTimeout(() => {
+      router.push(href);
       dispatch(resetPageTransition());
     }, 4000);
   }, []);
@@ -188,7 +190,7 @@ const SideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
                           ? "text-white translate-x-7"
                           : "text-[#c9c9c9] group-hover:translate-x-7"
                       }`}
-                      onClick={(e) => handlePageTransition(e)}
+                      onClick={(e) => handlePageTransition(e, item.href)}
                     >
                       <div
                         className={`absolute left-[-10%] transition-opacity duration-300 ${
