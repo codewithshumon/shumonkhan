@@ -1,10 +1,15 @@
 "use client";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
 import { usePathname } from "next/navigation";
+import {
+  resetPageTransition,
+  triggerPageTransition,
+} from "@/app/store/slice/animationSlice";
 
-const SideMenu = ({ isMenuOpen, toggleMenu }) => {
+const SideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
   const pathname = usePathname();
   const colors = ["#a63607", "#06a19c", "#4239c4", "#b83364"];
   const overlayRef = useRef();
@@ -17,14 +22,15 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
   const socialHeadingRef = useRef();
   const [hoveredNavItem, setHoveredNavItem] = useState(null);
   const [hoveredSocialItem, setHoveredSocialItem] = useState(null);
+  const dispatch = useDispatch();
 
-  // Navigation items
   const navigationItems = [
     { name: "Home", href: "/" },
     { name: "Work", href: "/work" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
+
   const socialItems = [
     {
       text: "LinkedIn",
@@ -40,10 +46,21 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
     },
   ];
 
+  const handlePageTransition = useCallback((e) => {
+    e.preventDefault();
+    setTimeout(() => {
+      dispatch(triggerPageTransition());
+    }, 1000);
+
+    setIsMenuOpen(false);
+    setTimeout(() => {
+      dispatch(resetPageTransition());
+    }, 4000);
+  }, []);
+
   useEffect(() => {
     tl.current = gsap.timeline({ paused: true });
 
-    // Overlay animation
     tl.current.fromTo(
       overlayRef.current,
       { opacity: 0 },
@@ -51,7 +68,6 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
       0
     );
 
-    // Menu panel animation
     tl.current.fromTo(
       menuPanelRef.current,
       { x: "100%" },
@@ -59,7 +75,6 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
       0
     );
 
-    // Color layers animation
     colorLayersRef.current.forEach((layer, index) => {
       tl.current.fromTo(
         layer,
@@ -69,7 +84,6 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
       );
     });
 
-    // Content fade-in
     tl.current.fromTo(
       contentRef.current,
       { opacity: 0 },
@@ -77,7 +91,6 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
       0
     );
 
-    // Headings animation
     [navHeadingRef.current, socialHeadingRef.current].forEach(
       (heading, index) => {
         tl.current.fromTo(
@@ -95,7 +108,6 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
       }
     );
 
-    // Menu items animation
     menuItemsRef.current.forEach((item, index) => {
       tl.current.fromTo(
         item,
@@ -126,7 +138,7 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
     <>
       <div
         ref={overlayRef}
-        onClick={toggleMenu}
+        onClick={() => setIsMenuOpen(false)}
         className="fixed inset-0 bg-black/15 z-30 opacity-0"
       />
 
@@ -150,7 +162,6 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
           ref={contentRef}
           className="absolute inset-0 p-8 md:p-12 lg:p-20 bg-[#1C1D20] opacity-0 pb-8 lg:pb-10 pt-16 lg:pt-20 flex flex-col justify-between"
         >
-          {/* Navigation Section */}
           <div className="flex flex-col">
             <h2
               ref={navHeadingRef}
@@ -177,7 +188,7 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
                           ? "text-white translate-x-7"
                           : "text-[#c9c9c9] group-hover:translate-x-7"
                       }`}
-                      onClick={toggleMenu}
+                      onClick={(e) => handlePageTransition(e)}
                     >
                       <div
                         className={`absolute left-[-10%] transition-opacity duration-300 ${
@@ -197,7 +208,6 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
             </ul>
           </div>
 
-          {/* Social Section */}
           <div className="mt-8 md:mt-16 flex flex-col space-y-4">
             <h2
               ref={socialHeadingRef}
@@ -225,7 +235,7 @@ const SideMenu = ({ isMenuOpen, toggleMenu }) => {
                         ? "text-white"
                         : "text-[#c9c9c9]"
                     }`}
-                    onClick={toggleMenu}
+                    onClick={() => setIsMenuOpen(false)}
                   >
                     <span className="text-sm md:text-base">{item.text}</span>
                     <div

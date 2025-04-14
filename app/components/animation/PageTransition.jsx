@@ -2,6 +2,7 @@
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
 
 const colors = [
   "#a63607",
@@ -14,7 +15,6 @@ const colors = [
   "#b83364",
 ];
 
-// SVG path data for different pages
 const iconMap = {
   work: "M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-9 7v-4h2v4h-2zm-4 0v-4h2v4H7zm8 0v-4h2v4h-2z",
   contact:
@@ -33,19 +33,20 @@ const PageTransition = ({
   group2Stagger = 0.15,
 }) => {
   const pathname = usePathname();
+  const { shouldAnimatePageTransition } = useSelector(
+    (state) => state.animation
+  );
   const colorLayersRef = useRef([]);
   const divRef = useRef();
   const tl = useRef();
   const initialized = useRef(false);
 
-  // Get current page name from path
   const getPageName = () => {
     const pathSegments = pathname?.split("/")?.filter(Boolean);
     const pageName = pathSegments?.length ? pathSegments.slice(-1)[0] : "home";
     return pageName.charAt(0).toUpperCase() + pageName.slice(1);
   };
 
-  // Get appropriate SVG path
   const getIconPath = () => {
     const pageKey = Object.keys(iconMap).find((key) =>
       pathname?.toLowerCase().includes(key)
@@ -54,6 +55,8 @@ const PageTransition = ({
   };
 
   useEffect(() => {
+    if (!shouldAnimatePageTransition) return;
+
     gsap.set(colorLayersRef.current, { y: "100%" });
     gsap.set(divRef.current, { y: "100%" });
 
@@ -101,14 +104,23 @@ const PageTransition = ({
     );
 
     initialized.current = true;
-    return () => tl.current.kill();
-  }, [pauseTime, group1Duration, group1Stagger, group2Duration, group2Stagger]);
+    tl.current.play();
 
-  useEffect(() => {
-    if (pathname && tl.current) {
-      tl.current.restart();
-    }
-  }, [pathname]);
+    return () => {
+      if (tl.current) {
+        tl.current.kill();
+      }
+    };
+  }, [
+    pauseTime,
+    group1Duration,
+    group1Stagger,
+    group2Duration,
+    group2Stagger,
+    shouldAnimatePageTransition,
+  ]);
+
+  if (!shouldAnimatePageTransition) return null;
 
   return (
     <div className="fixed inset-0 w-full h-full z-[9999] pointer-events-none overflow-hidden">

@@ -1,17 +1,22 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import AnimatedTextAboutMe from "./AnimatedTextAboutMe";
 import Link from "next/link";
+import {
+  resetPageTransition,
+  triggerPageTransition,
+} from "@/app/store/slice/animationSlice";
+import { useDispatch } from "react-redux";
 
 const greetings = [
   "Willkommen", // German
   "Benvenuto", // Italian
   "Bienvenue", // French
   "ようこそ", // Japanese (Yōkoso)
-  "Добро пожаловать", // Russian (Dobro pozhalovat’)
+  "Добро пожаловать", // Russian (Dobro pozhalovat')
   "स्वागत है", // Hindi (Swagat hai)
   "欢迎", // Chinese (Huānyíng)
   "Bienvenido", // Spanish
@@ -27,6 +32,17 @@ export default function LogoAnimation() {
   const [currentGreeting, setCurrentGreeting] = useState(0);
   const [greetingIntervalId, setGreetingIntervalId] = useState(null);
   const [progress, setProgress] = useState(0);
+  const dispatch = useDispatch();
+
+  // Handle page transition with proper navigation
+  const handlePageTransition = useCallback((e) => {
+    e.preventDefault();
+    dispatch(triggerPageTransition());
+
+    setTimeout(() => {
+      dispatch(resetPageTransition());
+    }, [3000]);
+  }, []);
 
   useEffect(() => {
     // Progress bar animation (0-100% in 2500ms)
@@ -84,7 +100,7 @@ export default function LogoAnimation() {
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 right-0 z-60 overflow-hidden flex justify-center  "
+        className="fixed top-0 left-0 right-0 z-60 overflow-hidden flex justify-center"
         initial={{ height: "100vh" }}
         animate={collapsed ? { height: "15vh", width: "15vw" } : {}}
         transition={{ duration: 0.2, ease: "easeInOut" }}
@@ -121,7 +137,7 @@ export default function LogoAnimation() {
               borderWidth: animationStarted ? "2px" : "4px",
             }}
           >
-            <Link href="/">
+            <Link href="/" onClick={handlePageTransition}>
               <Image
                 src="https://avatar.iran.liara.run/public/boy"
                 alt="Profile"
@@ -159,7 +175,7 @@ export default function LogoAnimation() {
                   stroke="green"
                   strokeWidth="5"
                   strokeLinecap="round"
-                  strokeDasharray={`${progress * 2.83}, 283`} // 2πr ≈ 283 when r=45
+                  strokeDasharray={`${progress * 2.83}, 283`}
                   transform="rotate(-90 50 50)"
                 />
               </svg>
@@ -181,7 +197,7 @@ export default function LogoAnimation() {
           </motion.div>
         </div>
         {animationComplete && (
-          <div className=" absolute top-[1.8rem] right-0 w-[70%]  overflow-x-hidden ">
+          <div className="absolute top-[1.8rem] right-0 w-[70%] overflow-x-hidden">
             <AnimatedTextAboutMe animationComplete={animationComplete} />
           </div>
         )}
