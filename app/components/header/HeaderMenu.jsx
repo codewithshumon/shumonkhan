@@ -67,7 +67,7 @@ const HeaderMenu = () => {
           initial={{ y: 0 }}
           animate={{ y: isScrolled ? "-15vh" : 0 }}
           transition={{ type: "spring", damping: 20 }}
-          className="fixed top-0 left-0 h-[15vh] w-full flex justify-end px-5 sm:px-10 z-35"
+          className="fixed top-0 left-0 h-[13vh] w-full flex justify-end px-5 sm:px-10 z-35"
         >
           <nav className="flex items-center gap-3 sm:gap-5 md:gap-8 xl:gap-12 text-xs xs:text-[0.9rem] sm:text-[1rem] font-semibold">
             {[
@@ -112,11 +112,11 @@ const HeaderMenu = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
             transition={{ type: "spring", damping: 10 }}
-            className="fixed right-10 top-8 z-40"
+            className="fixed right-5 xs:right-10 top-8 z-40"
           >
             <button
               onClick={toggleMenu}
-              className="w-18 h-18 rounded-full bg-[#3c32be] shadow-lg flex flex-col items-center justify-center gap-1.5 hover:bg-[#4a41c7] transition-colors cursor-pointer"
+              className="w-15 h-15 xs:w-18 xs:h-18 rounded-full bg-[#3c32be] shadow-lg flex flex-col items-center justify-center gap-1.5 hover:bg-[#4a41c7] transition-colors cursor-pointer"
               aria-label="Toggle menu"
             >
               <motion.div
