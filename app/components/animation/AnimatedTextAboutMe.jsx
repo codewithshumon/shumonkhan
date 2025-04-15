@@ -70,7 +70,7 @@ const AnimatedTextAboutMe = ({ animationComplete }) => {
     >
       <div
         ref={slider}
-        className="w-full h-full text-[15px] font-medium select-none overflow-hidden"
+        className="w-full h-full text-[12px] xs:text-[13px] sm:text-[15px] font-medium select-none overflow-hidden"
         style={{
           maskImage:
             "linear-gradient(to right, transparent 0%, black 20%, black 90%, transparent 100%)",

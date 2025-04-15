@@ -1,67 +1,114 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter, usePathname } from "next/navigation";
 import AnimatedTextAboutMe from "./AnimatedTextAboutMe";
-import Link from "next/link";
+import {
+  resetPageTransition,
+  triggerPageTransition,
+} from "@/app/store/slice/animationSlice";
+import { useDispatch } from "react-redux";
+import useScreenSize from "@/app/hooks/useScreenSize";
 
-const greetings = [
-  "Willkommen", // German
-  "Benvenuto", // Italian
-  "Bienvenue", // French
-  "ようこそ", // Japanese (Yōkoso)
-  "Добро пожаловать", // Russian (Dobro pozhalovat’)
-  "स्वागत है", // Hindi (Swagat hai)
-  "欢迎", // Chinese (Huānyíng)
-  "Bienvenido", // Spanish
-  "أهلاً وسهلاً", // Arabic (Ahlan wa sahlan)
-  "স্বাগতম", // Bengali (Shagatom)
-  "Welcome", // English
-];
+const routeGreetings = {
+  "/": [
+    "Willkommen", // German
+    "Benvenuto", // Italian
+    "Bienvenue", // French
+    "ようこそ", // Japanese
+    "Добро пожаловать", // Russian
+    "स्वागत है", // Hindi
+    "欢迎", // Chinese
+    "Bienvenido", // Spanish
+    "أهلاً وسهلاً", // Arabic
+    "স্বাগতম", // Bengali
+    "Welcome", // English
+  ],
+  "/about": [
+    "Design Philosophy",
+    "User-Centric Mindset",
+    "Technical Approach",
+    "User-Centric Mindset",
+    "From Sketch to Screen",
+    "Designing with Purpose",
+    "Problem-Solving DNA",
+    "Digital Craftsmanship",
+    "Who I Am",
+    "Behind the Interface",
+    "Get to Know Me",
+  ],
+  "/contact": [
+    "Discuss Your Vision",
+    "Start a Project",
+    "Let's Build Something",
+    "Have a Project in Mind?",
+    "Let's Collaborate",
+    "Hire Your Designer",
+    "New Opportunity",
+    "Always Open to Ideas",
+    "Freelance Inquiry",
+    "Work With Me",
+    "Send Me an Email",
+  ],
+  "/work": [
+    "Featured Projects",
+    "UI Showcase",
+    "Code Meets Design",
+    "Interaction Designs",
+    "UX Case Studies",
+    "Real-world Solutions",
+    "Responsive Designs",
+    "Prototype Gallery",
+    "Apps I've Built",
+    "Development Samples",
+    "Explore My Best Works",
+  ],
+};
 
 export default function LogoAnimation() {
+  const pathname = usePathname();
+  const currentGreetings = routeGreetings[pathname] || routeGreetings["/"];
   const [animationStarted, setAnimationStarted] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [currentGreeting, setCurrentGreeting] = useState(0);
   const [greetingIntervalId, setGreetingIntervalId] = useState(null);
   const [progress, setProgress] = useState(0);
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { isMiniMobile, isMobile, isTablet } = useScreenSize();
+
+  // Handle page transition
+  const handlePageTransition = useCallback(
+    (e) => {
+      e.preventDefault();
+      router.push("/");
+      setTimeout(() => dispatch(triggerPageTransition()), 100);
+      setTimeout(() => dispatch(resetPageTransition()), 3000);
+    },
+    [dispatch, router]
+  );
 
   useEffect(() => {
-    // Progress bar animation (0-100% in 2500ms)
     const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(progressInterval);
-          return 100;
-        }
-        return prev + 1;
-      });
-    }, 22); // 2500ms / 100 = 25ms per percent
+      setProgress((prev) => (prev >= 100 ? 100 : prev + 1));
+    }, 22);
 
-    const startTimer = setTimeout(() => {
-      setAnimationStarted(true);
-    }, 2500);
+    const startTimer = setTimeout(() => setAnimationStarted(true), 2500);
+    const completeTimer = setTimeout(() => setAnimationComplete(true), 3000);
+    const collapseTimer = setTimeout(() => setCollapsed(true), 2800);
 
-    const completeTimer = setTimeout(() => {
-      setAnimationComplete(true);
-    }, 3000);
-
-    const collapseTimer = setTimeout(() => {
-      setCollapsed(true);
-    }, 2800);
-
-    // Greeting animation
     const intervalId = setInterval(() => {
       setCurrentGreeting((prev) => {
-        if (prev === greetings.length - 1) {
-          clearInterval(intervalId); // Stop when reaching last greeting
+        if (prev === currentGreetings.length - 1) {
+          clearInterval(intervalId);
           return prev;
         }
         return prev + 1;
       });
-    }, 200); // Change every 0.2 seconds
+    }, 200);
 
     setGreetingIntervalId(intervalId);
 
@@ -72,26 +119,72 @@ export default function LogoAnimation() {
       clearTimeout(collapseTimer);
       clearInterval(intervalId);
     };
-  }, []);
+  }, [currentGreetings]);
 
-  // Clear interval when reaching last greeting
   useEffect(() => {
-    if (currentGreeting === greetings.length - 1 && greetingIntervalId) {
+    if (currentGreeting === currentGreetings.length - 1 && greetingIntervalId) {
       clearInterval(greetingIntervalId);
     }
-  }, [currentGreeting, greetingIntervalId]);
+  }, [currentGreeting, currentGreetings.length, greetingIntervalId]);
+
+  // Calculate responsive values
+  const getResponsiveValues = () => {
+    if (isMiniMobile) {
+      return {
+        left: "1rem",
+        size: "2rem",
+        borderWidth: "1px",
+        textSize: "text-lg",
+      };
+    }
+    if (isMobile) {
+      return {
+        left: "1.5rem",
+        size: "2.5rem",
+        borderWidth: "2px",
+        textSize: "text-xl",
+      };
+    }
+    if (isTablet) {
+      return {
+        left: "2rem",
+        size: "2.8rem",
+        borderWidth: "2px",
+        textSize: "text-xl",
+      };
+    }
+    return {
+      left: "2.5rem",
+      size: "3rem",
+      borderWidth: "2px",
+      textSize: "text-xl",
+    };
+  };
+
+  const responsiveValues = getResponsiveValues();
 
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 right-0 z-60 overflow-hidden flex justify-center  "
+        className="fixed top-0 left-0 right-0 z-60 overflow-hidden flex justify-center "
         initial={{ height: "100vh" }}
-        animate={collapsed ? { height: "15vh", width: "15vw" } : {}}
+        animate={
+          collapsed
+            ? {
+                height: isMiniMobile ? "12vh" : "15vh",
+                width: isMiniMobile
+                  ? "40vw"
+                  : isMobile
+                  ? "30vw"
+                  : isTablet
+                  ? "25vw"
+                  : "15vw",
+              }
+            : {}
+        }
         transition={{ duration: 0.2, ease: "easeInOut" }}
       >
-        {/* Content container with max-width */}
-        <div className="relative h-screen w-screen max-w-[1440px] px-10">
-          {/* Loading Animation */}
+        <div className="relative h-screen w-screen max-w-[1440px] px-4 sm:px-6 md:px-10">
           <motion.div
             layout
             initial={{
@@ -106,42 +199,41 @@ export default function LogoAnimation() {
             animate={
               animationStarted
                 ? {
-                    top: "1rem",
-                    left: "2.5rem",
+                    top: isMiniMobile ? "1.4rem" : isMobile ? "1.2rem" : "1rem",
+                    left: responsiveValues.left,
                     x: 0,
                     y: 0,
-                    width: "3rem",
-                    height: "3rem",
+                    width: responsiveValues.size,
+                    height: responsiveValues.size,
                   }
                 : {}
             }
             transition={{ duration: 0.6 }}
-            className="rounded-full border-4 border-white overflow-hidden bg-green-600 z-10"
+            className="rounded-full border-white overflow-hidden bg-green-600 z-10"
             style={{
-              borderWidth: animationStarted ? "2px" : "4px",
+              borderWidth: animationStarted
+                ? responsiveValues.borderWidth
+                : "4px",
+              borderStyle: "solid",
             }}
           >
-            <Link href="/">
+            <div onClick={handlePageTransition} className="cursor-pointer">
               <Image
                 src="https://avatar.iran.liara.run/public/boy"
                 alt="Profile"
                 fill
                 className="object-cover"
+                sizes="(max-width: 512px) 32px, (max-width: 640px) 40px, 48px"
               />
-            </Link>
+            </div>
           </motion.div>
 
-          {/* Circular Progress Bar - only visible during initial load */}
           {!animationStarted && (
             <div
               className="absolute top-[45%] left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-              style={{
-                width: "11rem",
-                height: "11rem",
-              }}
+              style={{ width: "11rem", height: "11rem" }}
             >
               <svg className="w-full h-full" viewBox="0 0 100 100">
-                {/* Background circle */}
                 <circle
                   cx="50"
                   cy="50"
@@ -150,7 +242,6 @@ export default function LogoAnimation() {
                   stroke="#333"
                   strokeWidth="3"
                 />
-                {/* Progress circle */}
                 <circle
                   cx="50"
                   cy="50"
@@ -159,45 +250,47 @@ export default function LogoAnimation() {
                   stroke="green"
                   strokeWidth="5"
                   strokeLinecap="round"
-                  strokeDasharray={`${progress * 2.83}, 283`} // 2πr ≈ 283 when r=45
+                  strokeDasharray={`${progress * 2.83}, 283`}
                   transform="rotate(-90 50 50)"
                 />
               </svg>
             </div>
           )}
 
-          {/* Greetings text - positioned below the image */}
           <motion.div
-            className="absolute top-[calc(50%+4rem)] left-1/2 transform -translate-x-1/2 text-white text-xl font-bold text-center w-full"
+            className={`absolute top-[calc(50%+4rem)] left-1/2 transform -translate-x-1/2 text-white ${responsiveValues.textSize} font-bold text-center w-full px-2`}
             initial={{ opacity: 1, y: 0 }}
             animate={{
               opacity: animationStarted ? 0 : 1,
               y: animationStarted ? -20 : 0,
             }}
             transition={{ duration: 0.1, delay: animationStarted ? 0.1 : 0 }}
-            style={{ top: `calc(50% + 4rem)` }}
           >
-            {":)"} {greetings[currentGreeting]}
+            {":)"} {currentGreetings[currentGreeting]}
           </motion.div>
         </div>
         {animationComplete && (
-          <div className=" absolute top-[1.8rem] right-0 w-[70%]  overflow-x-hidden ">
+          <div className="absolute top-[1.8rem] right-0 w-[70%] overflow-x-hidden">
             <AnimatedTextAboutMe animationComplete={animationComplete} />
           </div>
         )}
       </motion.div>
 
-      {/* Animated Circle */}
       <motion.div
-        className="fixed top-[2.5rem] left-[4rem] bg-black rounded-full z-50"
+        className="fixed bg-black rounded-full z-50"
         style={{
+          top: "2.5rem",
+          left: isMiniMobile ? "2rem" : "3rem",
           transform: "translate(-50%, -50%)",
         }}
         initial={{ width: "300%", height: "300%" }}
         animate={
           collapsed
-            ? { width: "2.5rem", height: "2.5rem" }
-            : { width: "300%", height: "300%" }
+            ? {
+                width: "1rem",
+                height: "1rem",
+              }
+            : {}
         }
         transition={{ duration: 0.3 }}
       />

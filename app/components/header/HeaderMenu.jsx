@@ -1,15 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 import {
   motion,
   AnimatePresence,
   useScroll,
   useMotionValueEvent,
 } from "framer-motion";
-import Link from "next/link";
+
 import SideMenu from "./SideMenu";
+import {
+  resetPageTransition,
+  triggerPageTransition,
+} from "@/app/store/slice/animationSlice";
 
 const HeaderMenu = () => {
   const pathname = usePathname();
@@ -17,9 +22,26 @@ const HeaderMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [hoveredHref, setHoveredHref] = useState(null);
+  const router = useRouter();
+  const dispatch = useDispatch();
   const { scrollY } = useScroll();
 
-  // Prevent body scroll when menu is open
+  const handlePageTransition = useCallback((e, href) => {
+    e.preventDefault();
+    router.push(href);
+    setTimeout(() => {
+      dispatch(triggerPageTransition());
+    }, 100);
+
+    setTimeout(() => {
+      dispatch(resetPageTransition());
+    }, 3000);
+  }, []);
+
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen((prev) => !prev);
+  }, []);
+
   useEffect(() => {
     if (isMenuOpen) {
       document.body.classList.add("overflow-hidden");
@@ -32,37 +54,34 @@ const HeaderMenu = () => {
     };
   }, [isMenuOpen]);
 
-  // Scroll listener
   useMotionValueEvent(scrollY, "change", (latest) => {
     const scrolled = latest > 120;
     setIsVisible(scrolled);
     setIsScrolled(scrolled);
   });
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
   return (
     <>
-      {/* Header with Navigation */}
       <header>
         <motion.div
           initial={{ y: 0 }}
           animate={{ y: isScrolled ? "-15vh" : 0 }}
           transition={{ type: "spring", damping: 20 }}
-          className="fixed top-0 left-0 h-[15vh] w-full flex justify-end px-10 z-35"
+          className="fixed top-0 left-0 h-[13vh] w-full flex justify-end px-5 sm:px-10 z-35"
         >
-          <nav className="flex items-center gap-12 font-semibold">
+          <nav className="flex items-center gap-3 sm:gap-5 md:gap-8 xl:gap-12 text-xs xs:text-[0.9rem] sm:text-[1rem] font-semibold">
             {[
               { name: "Work", href: "/work" },
               { name: "About", href: "/about" },
               { name: "Contact", href: "/contact" },
             ].map((item) => (
-              <Link
+              <div
                 key={item.name}
                 href={item.href}
+                onClick={(e) => handlePageTransition(e, item.href)}
                 onMouseEnter={() => setHoveredHref(item.href)}
                 onMouseLeave={() => setHoveredHref(null)}
-                className={`group relative py-2 transition-all duration-300 ${
+                className={`group relative py-2 transition-all duration-300 cursor-pointer ${
                   (item.href === pathname && !hoveredHref) ||
                   hoveredHref === item.href
                     ? "text-white"
@@ -80,13 +99,12 @@ const HeaderMenu = () => {
                       : "scale-x-0"
                   }`}
                 />
-              </Link>
+              </div>
             ))}
           </nav>
         </motion.div>
       </header>
 
-      {/* Floating Circle Button */}
       <AnimatePresence>
         {isVisible && (
           <motion.div
@@ -94,11 +112,12 @@ const HeaderMenu = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
             transition={{ type: "spring", damping: 10 }}
-            className="fixed right-10 top-8 z-40 "
+            className="fixed right-5 xs:right-10 top-8 z-40"
           >
             <button
               onClick={toggleMenu}
-              className="w-18 h-18 rounded-full bg-[#3c32be] shadow-lg flex flex-col items-center justify-center gap-1.5 hover:bg-[#4a41c7] transition-colors cursor-pointer"
+              className="w-15 h-15 xs:w-18 xs:h-18 rounded-full bg-[#3c32be] shadow-lg flex flex-col items-center justify-center gap-1.5 hover:bg-[#4a41c7] transition-colors cursor-pointer"
+              aria-label="Toggle menu"
             >
               <motion.div
                 className="h-[2px] w-[25px] bg-white rounded-full"
@@ -121,11 +140,7 @@ const HeaderMenu = () => {
         )}
       </AnimatePresence>
 
-      {/* Side Menu */}
-      <SideMenu
-        isMenuOpen={isMenuOpen}
-        toggleMenu={() => setIsMenuOpen(false)}
-      />
+      <SideMenu isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
     </>
   );
 };
