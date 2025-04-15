@@ -3,30 +3,72 @@
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import AnimatedTextAboutMe from "./AnimatedTextAboutMe";
-
 import {
   resetPageTransition,
   triggerPageTransition,
 } from "@/app/store/slice/animationSlice";
 import { useDispatch } from "react-redux";
 
-const greetings = [
-  "Willkommen", // German
-  "Benvenuto", // Italian
-  "Bienvenue", // French
-  "ようこそ", // Japanese (Yōkoso)
-  "Добро пожаловать", // Russian (Dobro pozhalovat')
-  "स्वागत है", // Hindi (Swagat hai)
-  "欢迎", // Chinese (Huānyíng)
-  "Bienvenido", // Spanish
-  "أهلاً وسهلاً", // Arabic (Ahlan wa sahlan)
-  "স্বাগতম", // Bengali (Shagatom)
-  "Welcome", // English
-];
+const routeGreetings = {
+  "/": [
+    "Willkommen", // German
+    "Benvenuto", // Italian
+    "Bienvenue", // French
+    "ようこそ", // Japanese
+    "Добро пожаловать", // Russian
+    "स्वागत है", // Hindi
+    "欢迎", // Chinese
+    "Bienvenido", // Spanish
+    "أهلاً وسهلاً", // Arabic
+    "স্বাগতম", // Bengali
+    "Welcome", // English
+  ],
+  "/about": [
+    "Discover",
+    "Explore",
+    "Learn More",
+    "About Me",
+    "My Story",
+    "Background",
+    "Journey",
+    "Experience",
+    "Bio",
+    "Who am I?",
+    "Get to Know Me",
+  ],
+  "/contact": [
+    "Reach Out",
+    "Let's Talk",
+    "Connect",
+    "Get in Touch",
+    "Contact Me",
+    "Say Hello",
+    "Collaborate",
+    "Message",
+    "Hire Me",
+    "Network",
+    "Available Now",
+  ],
+  "/work": [
+    "Portfolio",
+    "Projects",
+    "Creations",
+    "Works",
+    "Case Studies",
+    "Showcase",
+    "Achievements",
+    "Experience",
+    "Designs",
+    "Solutions",
+    "My Works",
+  ],
+};
 
 export default function LogoAnimation() {
+  const pathname = usePathname();
+  const currentGreetings = routeGreetings[pathname] || routeGreetings["/"];
   const [animationStarted, setAnimationStarted] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -36,54 +78,35 @@ export default function LogoAnimation() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  // Handle page transition with proper navigation
-  const handlePageTransition = useCallback((e) => {
-    e.preventDefault();
-    router.push("/");
-
-    setTimeout(() => {
-      dispatch(triggerPageTransition());
-    }, 100);
-
-    setTimeout(() => {
-      dispatch(resetPageTransition());
-    }, [3000]);
-  }, []);
+  // Handle page transition
+  const handlePageTransition = useCallback(
+    (e) => {
+      e.preventDefault();
+      router.push("/");
+      setTimeout(() => dispatch(triggerPageTransition()), 100);
+      setTimeout(() => dispatch(resetPageTransition()), 3000);
+    },
+    [dispatch, router]
+  );
 
   useEffect(() => {
-    // Progress bar animation (0-100% in 2500ms)
     const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(progressInterval);
-          return 100;
-        }
-        return prev + 1;
-      });
-    }, 22); // 2500ms / 100 = 25ms per percent
+      setProgress((prev) => (prev >= 100 ? 100 : prev + 1));
+    }, 22);
 
-    const startTimer = setTimeout(() => {
-      setAnimationStarted(true);
-    }, 2500);
+    const startTimer = setTimeout(() => setAnimationStarted(true), 2500);
+    const completeTimer = setTimeout(() => setAnimationComplete(true), 3000);
+    const collapseTimer = setTimeout(() => setCollapsed(true), 2800);
 
-    const completeTimer = setTimeout(() => {
-      setAnimationComplete(true);
-    }, 3000);
-
-    const collapseTimer = setTimeout(() => {
-      setCollapsed(true);
-    }, 2800);
-
-    // Greeting animation
     const intervalId = setInterval(() => {
       setCurrentGreeting((prev) => {
-        if (prev === greetings.length - 1) {
-          clearInterval(intervalId); // Stop when reaching last greeting
+        if (prev === currentGreetings.length - 1) {
+          clearInterval(intervalId);
           return prev;
         }
         return prev + 1;
       });
-    }, 200); // Change every 0.2 seconds
+    }, 200);
 
     setGreetingIntervalId(intervalId);
 
@@ -94,14 +117,13 @@ export default function LogoAnimation() {
       clearTimeout(collapseTimer);
       clearInterval(intervalId);
     };
-  }, []);
+  }, [currentGreetings]); // Add currentGreetings as dependency
 
-  // Clear interval when reaching last greeting
   useEffect(() => {
-    if (currentGreeting === greetings.length - 1 && greetingIntervalId) {
+    if (currentGreeting === currentGreetings.length - 1 && greetingIntervalId) {
       clearInterval(greetingIntervalId);
     }
-  }, [currentGreeting, greetingIntervalId]);
+  }, [currentGreeting, currentGreetings.length, greetingIntervalId]);
 
   return (
     <>
@@ -111,9 +133,7 @@ export default function LogoAnimation() {
         animate={collapsed ? { height: "15vh", width: "15vw" } : {}}
         transition={{ duration: 0.2, ease: "easeInOut" }}
       >
-        {/* Content container with max-width */}
         <div className="relative h-screen w-screen max-w-[1440px] px-10">
-          {/* Loading Animation */}
           <motion.div
             layout
             initial={{
@@ -139,11 +159,9 @@ export default function LogoAnimation() {
             }
             transition={{ duration: 0.6 }}
             className="rounded-full border-4 border-white overflow-hidden bg-green-600 z-10"
-            style={{
-              borderWidth: animationStarted ? "2px" : "4px",
-            }}
+            style={{ borderWidth: animationStarted ? "2px" : "4px" }}
           >
-            <div onClick={handlePageTransition} className=" cursor-pointer">
+            <div onClick={handlePageTransition} className="cursor-pointer">
               <Image
                 src="https://avatar.iran.liara.run/public/boy"
                 alt="Profile"
@@ -153,17 +171,12 @@ export default function LogoAnimation() {
             </div>
           </motion.div>
 
-          {/* Circular Progress Bar - only visible during initial load */}
           {!animationStarted && (
             <div
               className="absolute top-[45%] left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-              style={{
-                width: "11rem",
-                height: "11rem",
-              }}
+              style={{ width: "11rem", height: "11rem" }}
             >
               <svg className="w-full h-full" viewBox="0 0 100 100">
-                {/* Background circle */}
                 <circle
                   cx="50"
                   cy="50"
@@ -172,7 +185,6 @@ export default function LogoAnimation() {
                   stroke="#333"
                   strokeWidth="3"
                 />
-                {/* Progress circle */}
                 <circle
                   cx="50"
                   cy="50"
@@ -188,7 +200,6 @@ export default function LogoAnimation() {
             </div>
           )}
 
-          {/* Greetings text - positioned below the image */}
           <motion.div
             className="absolute top-[calc(50%+4rem)] left-1/2 transform -translate-x-1/2 text-white text-xl font-bold text-center w-full"
             initial={{ opacity: 1, y: 0 }}
@@ -197,9 +208,8 @@ export default function LogoAnimation() {
               y: animationStarted ? -20 : 0,
             }}
             transition={{ duration: 0.1, delay: animationStarted ? 0.1 : 0 }}
-            style={{ top: `calc(50% + 4rem)` }}
           >
-            {":)"} {greetings[currentGreeting]}
+            {":)"} {currentGreetings[currentGreeting]}
           </motion.div>
         </div>
         {animationComplete && (
@@ -209,18 +219,11 @@ export default function LogoAnimation() {
         )}
       </motion.div>
 
-      {/* Animated Circle */}
       <motion.div
         className="fixed top-[2.5rem] left-[4rem] bg-black rounded-full z-50"
-        style={{
-          transform: "translate(-50%, -50%)",
-        }}
+        style={{ transform: "translate(-50%, -50%)" }}
         initial={{ width: "300%", height: "300%" }}
-        animate={
-          collapsed
-            ? { width: "2.5rem", height: "2.5rem" }
-            : { width: "300%", height: "300%" }
-        }
+        animate={collapsed ? { width: "2.5rem", height: "2.5rem" } : {}}
         transition={{ duration: 0.3 }}
       />
     </>
