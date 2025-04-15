@@ -49,15 +49,15 @@ const SideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
 
   const handlePageTransition = useCallback((e, href) => {
     e.preventDefault();
+    setIsMenuOpen(false);
+    router.push(href);
     setTimeout(() => {
       dispatch(triggerPageTransition());
-    }, 1000);
+    }, 700);
 
-    setIsMenuOpen(false);
     setTimeout(() => {
-      router.push(href);
       dispatch(resetPageTransition());
-    }, 4000);
+    }, 3700);
   }, []);
 
   useEffect(() => {

@@ -28,10 +28,12 @@ const HeaderMenu = () => {
 
   const handlePageTransition = useCallback((e, href) => {
     e.preventDefault();
-    dispatch(triggerPageTransition());
+    router.push(href);
+    setTimeout(() => {
+      dispatch(triggerPageTransition());
+    }, 100);
 
     setTimeout(() => {
-      router.push(href);
       dispatch(resetPageTransition());
     }, 3000);
   }, []);

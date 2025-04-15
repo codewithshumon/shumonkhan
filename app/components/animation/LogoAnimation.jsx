@@ -39,10 +39,13 @@ export default function LogoAnimation() {
   // Handle page transition with proper navigation
   const handlePageTransition = useCallback((e) => {
     e.preventDefault();
-    dispatch(triggerPageTransition());
+    router.push("/");
 
     setTimeout(() => {
-      router.push("/");
+      dispatch(triggerPageTransition());
+    }, 100);
+
+    setTimeout(() => {
       dispatch(resetPageTransition());
     }, [3000]);
   }, []);
