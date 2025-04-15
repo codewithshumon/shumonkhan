@@ -22,6 +22,13 @@ const iconMap = {
   default: "/home.svg",
 };
 
+const pageTitles = {
+  "/": "Entering the Studio of Design & Development",
+  "/work": "Exploring Design & Development Excellence",
+  "/about": "Discovering Shumon's Creative Journey",
+  "/contact": "Initiating Creative Collaboration",
+};
+
 const PageTransition = ({
   pauseTime = 0.2,
   group1Duration = 1,
@@ -38,10 +45,15 @@ const PageTransition = ({
   const tl = useRef();
   const initialized = useRef(false);
 
-  const getPageName = () => {
-    const pathSegments = pathname?.split("/")?.filter(Boolean);
-    const pageName = pathSegments?.length ? pathSegments.slice(-1)[0] : "home";
-    return pageName.charAt(0).toUpperCase() + pageName.slice(1);
+  const getPageTitle = () => {
+    const cleanPath = pathname?.replace(/\/$/, "") || "/";
+    return (
+      pageTitles[cleanPath] ||
+      `${
+        cleanPath.split("/").pop()?.charAt(0).toUpperCase() +
+          cleanPath.split("/").pop()?.slice(1) || "Home"
+      }`
+    );
   };
 
   const getIconPath = () => {
@@ -141,7 +153,9 @@ const PageTransition = ({
           height={200}
           className="text-current"
         />
-        <h2 className="text-4xl font-bold animate-pulse">{getPageName()}</h2>
+        <h2 className="text-4xl font-bold animate-pulse text-center px-4">
+          {getPageTitle()}
+        </h2>
       </div>
     </div>
   );
