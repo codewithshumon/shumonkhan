@@ -16,13 +16,10 @@ const colors = [
 ];
 
 const iconMap = {
-  work: "M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zm-9 7v-4h2v4h-2zm-4 0v-4h2v4H7zm8 0v-4h2v4h-2z",
-  contact:
-    "M1 4h22v16H1V4zm22-2H1a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zm-9 12H8v-2h6v2zm4-4H8V8h10v2z",
-  about:
-    "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z",
-  default:
-    "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z",
+  work: "/work.svg",
+  contact: "/contact.svg",
+  about: "/about.svg",
+  default: "/home.svg",
 };
 
 const PageTransition = ({
@@ -134,18 +131,16 @@ const PageTransition = ({
       ))}
       <div
         ref={divRef}
-        className="absolute inset-0 flex flex-col items-center justify-center text-white bg-black gap-4"
+        className="absolute inset-0 flex flex-col items-center justify-center text-white bg-[#181717] gap-4"
         style={{ transform: "translateY(100%)" }}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="64"
-          height="64"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-        >
-          <path d={getIconPath()} fillRule="evenodd" clipRule="evenodd" />
-        </svg>
+        <img
+          src={getIconPath()}
+          alt=""
+          width={200}
+          height={200}
+          className="text-current"
+        />
         <h2 className="text-4xl font-bold animate-pulse">{getPageName()}</h2>
       </div>
     </div>
