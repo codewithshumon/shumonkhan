@@ -10,6 +10,7 @@ import {
   triggerPageTransition,
 } from "@/app/store/slice/animationSlice";
 import { useDispatch } from "react-redux";
+import useScreenSize from "@/app/hooks/useScreenSize";
 
 const routeGreetings = {
   "/": [
@@ -36,7 +37,7 @@ const routeGreetings = {
     "Digital Craftsmanship",
     "Who I Am",
     "Behind the Interface",
-    "Get to Know Me", // Final phrase
+    "Get to Know Me",
   ],
   "/contact": [
     "Discuss Your Vision",
@@ -49,7 +50,7 @@ const routeGreetings = {
     "Always Open to Ideas",
     "Freelance Inquiry",
     "Work With Me",
-    "Send Me an Email", // Final phras
+    "Send Me an Email",
   ],
   "/work": [
     "Featured Projects",
@@ -60,9 +61,9 @@ const routeGreetings = {
     "Real-world Solutions",
     "Responsive Designs",
     "Prototype Gallery",
-    "Apps I’ve Built",
+    "Apps I've Built",
     "Development Samples",
-    "Explore My Best Works", // Final phrase
+    "Explore My Best Works",
   ],
 };
 
@@ -77,6 +78,7 @@ export default function LogoAnimation() {
   const [progress, setProgress] = useState(0);
   const dispatch = useDispatch();
   const router = useRouter();
+  const { isMiniMobile, isMobile, isTablet } = useScreenSize();
 
   // Handle page transition
   const handlePageTransition = useCallback(
@@ -117,7 +119,7 @@ export default function LogoAnimation() {
       clearTimeout(collapseTimer);
       clearInterval(intervalId);
     };
-  }, [currentGreetings]); // Add currentGreetings as dependency
+  }, [currentGreetings]);
 
   useEffect(() => {
     if (currentGreeting === currentGreetings.length - 1 && greetingIntervalId) {
@@ -125,15 +127,64 @@ export default function LogoAnimation() {
     }
   }, [currentGreeting, currentGreetings.length, greetingIntervalId]);
 
+  // Calculate responsive values
+  const getResponsiveValues = () => {
+    if (isMiniMobile) {
+      return {
+        left: "1rem",
+        size: "2rem",
+        borderWidth: "1px",
+        textSize: "text-lg",
+      };
+    }
+    if (isMobile) {
+      return {
+        left: "1.5rem",
+        size: "2.5rem",
+        borderWidth: "2px",
+        textSize: "text-xl",
+      };
+    }
+    if (isTablet) {
+      return {
+        left: "2rem",
+        size: "2.8rem",
+        borderWidth: "2px",
+        textSize: "text-xl",
+      };
+    }
+    return {
+      left: "2.5rem",
+      size: "3rem",
+      borderWidth: "2px",
+      textSize: "text-xl",
+    };
+  };
+
+  const responsiveValues = getResponsiveValues();
+
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 right-0 z-60 overflow-hidden flex justify-center"
+        className="fixed top-0 left-0 right-0 z-60 overflow-hidden flex justify-center "
         initial={{ height: "100vh" }}
-        animate={collapsed ? { height: "15vh", width: "15vw" } : {}}
+        animate={
+          collapsed
+            ? {
+                height: isMiniMobile ? "12vh" : "15vh",
+                width: isMiniMobile
+                  ? "40vw"
+                  : isMobile
+                  ? "30vw"
+                  : isTablet
+                  ? "25vw"
+                  : "15vw",
+              }
+            : {}
+        }
         transition={{ duration: 0.2, ease: "easeInOut" }}
       >
-        <div className="relative h-screen w-screen max-w-[1440px] px-10">
+        <div className="relative h-screen w-screen max-w-[1440px] px-4 sm:px-6 md:px-10">
           <motion.div
             layout
             initial={{
@@ -148,18 +199,23 @@ export default function LogoAnimation() {
             animate={
               animationStarted
                 ? {
-                    top: "1rem",
-                    left: "2.5rem",
+                    top: isMiniMobile ? "1.4rem" : isMobile ? "1.2rem" : "1rem",
+                    left: responsiveValues.left,
                     x: 0,
                     y: 0,
-                    width: "3rem",
-                    height: "3rem",
+                    width: responsiveValues.size,
+                    height: responsiveValues.size,
                   }
                 : {}
             }
             transition={{ duration: 0.6 }}
-            className="rounded-full border-4 border-white overflow-hidden bg-green-600 z-10"
-            style={{ borderWidth: animationStarted ? "2px" : "4px" }}
+            className="rounded-full border-white overflow-hidden bg-green-600 z-10"
+            style={{
+              borderWidth: animationStarted
+                ? responsiveValues.borderWidth
+                : "4px",
+              borderStyle: "solid",
+            }}
           >
             <div onClick={handlePageTransition} className="cursor-pointer">
               <Image
@@ -167,6 +223,7 @@ export default function LogoAnimation() {
                 alt="Profile"
                 fill
                 className="object-cover"
+                sizes="(max-width: 512px) 32px, (max-width: 640px) 40px, 48px"
               />
             </div>
           </motion.div>
@@ -201,7 +258,7 @@ export default function LogoAnimation() {
           )}
 
           <motion.div
-            className="absolute top-[calc(50%+4rem)] left-1/2 transform -translate-x-1/2 text-white text-xl font-bold text-center w-full"
+            className={`absolute top-[calc(50%+4rem)] left-1/2 transform -translate-x-1/2 text-white ${responsiveValues.textSize} font-bold text-center w-full px-2`}
             initial={{ opacity: 1, y: 0 }}
             animate={{
               opacity: animationStarted ? 0 : 1,
@@ -220,10 +277,21 @@ export default function LogoAnimation() {
       </motion.div>
 
       <motion.div
-        className="fixed top-[2.5rem] left-[4rem] bg-black rounded-full z-50"
-        style={{ transform: "translate(-50%, -50%)" }}
+        className="fixed bg-black rounded-full z-50"
+        style={{
+          top: "2.5rem",
+          left: isMiniMobile ? "2rem" : "3rem",
+          transform: "translate(-50%, -50%)",
+        }}
         initial={{ width: "300%", height: "300%" }}
-        animate={collapsed ? { width: "2.5rem", height: "2.5rem" } : {}}
+        animate={
+          collapsed
+            ? {
+                width: "1rem",
+                height: "1rem",
+              }
+            : {}
+        }
         transition={{ duration: 0.3 }}
       />
     </>

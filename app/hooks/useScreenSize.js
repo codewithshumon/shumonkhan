@@ -23,8 +23,8 @@ const useScreenSize = () => {
         width,
         height,
         isMiniMobile: width < 512,
-        isMobile: width >= 512 && width < 640,
-        isTablet: width >= 640 && width < 1024,
+        isMobile: width >= 512 && width < 768,
+        isTablet: width >= 768 && width < 1024,
         isDesktop: width >= 1024,
       });
     };
