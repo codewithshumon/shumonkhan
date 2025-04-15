@@ -32,9 +32,9 @@ const pageTitles = {
 const PageTransition = ({
   pauseTime = 0.5,
   group1Duration = 0.7,
-  group1Stagger = 0.15,
+  group1Stagger = 0.1,
   group2Duration = 0.7,
-  group2Stagger = 0.15,
+  group2Stagger = 0.1,
 }) => {
   const pathname = usePathname();
   const { shouldAnimatePageTransition } = useSelector(
@@ -143,7 +143,7 @@ const PageTransition = ({
       ))}
       <div
         ref={divRef}
-        className="absolute inset-0 flex flex-col items-center justify-center text-white bg-[#181717] gap-4"
+        className="absolute inset-0 flex flex-col items-center justify-center text-white bg-[#181717] gap-2 md:gap-4"
         style={{ transform: "translateY(100%)" }}
       >
         <img
@@ -151,9 +151,9 @@ const PageTransition = ({
           alt=""
           width={200}
           height={200}
-          className="text-current"
+          className="w-[80px] h-[80px] sm:w-[130px] sm:h-[130px] md:w-[170px] md:h-[170px] lg:w-[200px] lg:h-[200px] transition-all duration-300"
         />
-        <h2 className="text-4xl font-bold animate-pulse text-center px-4">
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold animate-pulse text-center px-4 leading-tight">
           {getPageTitle()}
         </h2>
       </div>
