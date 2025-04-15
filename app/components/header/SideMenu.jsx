@@ -57,7 +57,7 @@ const SideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
 
     setTimeout(() => {
       dispatch(resetPageTransition());
-    }, 3700);
+    }, 3500);
   }, []);
 
   useEffect(() => {

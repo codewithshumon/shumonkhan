@@ -23,17 +23,17 @@ const iconMap = {
 };
 
 const pageTitles = {
-  "/": "Entering the Studio of Design & Development",
-  "/work": "Exploring Design & Development Excellence",
-  "/about": "Discovering Shumon's Creative Journey",
-  "/contact": "Initiating Creative Collaboration",
+  "/": "Design & Development Studio",
+  "/work": "Creative Innovation Showcase",
+  "/about": "Journey as Designer & Developer",
+  "/contact": "Let's Collaborate & Create",
 };
 
 const PageTransition = ({
-  pauseTime = 0.2,
-  group1Duration = 1,
+  pauseTime = 0.5,
+  group1Duration = 0.7,
   group1Stagger = 0.15,
-  group2Duration = 1,
+  group2Duration = 0.7,
   group2Stagger = 0.15,
 }) => {
   const pathname = usePathname();
