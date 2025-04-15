@@ -67,9 +67,9 @@ const HeaderMenu = () => {
           initial={{ y: 0 }}
           animate={{ y: isScrolled ? "-15vh" : 0 }}
           transition={{ type: "spring", damping: 20 }}
-          className="fixed top-0 left-0 h-[15vh] w-full flex justify-end px-10 z-35"
+          className="fixed top-0 left-0 h-[15vh] w-full flex justify-end px-5 sm:px-10 z-35"
         >
-          <nav className="flex items-center gap-12 font-semibold">
+          <nav className="flex items-center gap-3 sm:gap-5 md:gap-8 xl:gap-12 text-xs xs:text-[0.9rem] sm:text-[1rem] font-semibold">
             {[
               { name: "Work", href: "/work" },
               { name: "About", href: "/about" },
