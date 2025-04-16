@@ -280,7 +280,13 @@ export default function LogoAnimation() {
         className="fixed bg-black rounded-full z-50"
         style={{
           top: "2.5rem",
-          left: isMiniMobile ? "2rem" : "3rem",
+          left: isMiniMobile
+            ? "2rem"
+            : isMobile
+            ? "2.7rem"
+            : isTablet
+            ? "3.5rem"
+            : "4rem",
           transform: "translate(-50%, -50%)",
         }}
         initial={{ width: "300%", height: "300%" }}
@@ -292,7 +298,7 @@ export default function LogoAnimation() {
               }
             : {}
         }
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.5 }}
       />
     </>
   );
