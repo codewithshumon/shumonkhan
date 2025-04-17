@@ -13,7 +13,7 @@ export default function MouseFollower() {
     x: position.x,
     y: position.y,
     scale: 1,
-    color: "#FF0066",
+    color: "#ff16ff",
     opacity: 1,
   });
 
@@ -21,7 +21,7 @@ export default function MouseFollower() {
     x: 0,
     y: 0,
     scale: 1,
-    color: "#FF0066",
+    color: "#ff16ff",
     hidden: false,
   });
 
@@ -30,15 +30,15 @@ export default function MouseFollower() {
     targetState.current.y = position.y;
 
     const elements = document.elementsFromPoint(position.x, position.y);
-    let newState = { scale: 1, color: "#FF0066", hidden: false };
+    let newState = { scale: 1, color: "#ff16ff", hidden: false };
 
     elements.forEach((element) => {
       if (element.classList.contains("mouse-animate-scale")) {
         newState = { scale: 2, color: "#0a3aca", hidden: false };
       } else if (element.classList.contains("mouse-animate-hidden")) {
-        newState = { scale: 0, color: "#FF0066", hidden: true };
+        newState = { scale: 0, color: "#ff16ff", hidden: true };
       } else if (element.classList.contains("mouse-animate-color")) {
-        newState = { scale: 2, color: "#ff16ff", hidden: false };
+        newState = { scale: 2, color: "#FF0066", hidden: false };
       }
     });
 
