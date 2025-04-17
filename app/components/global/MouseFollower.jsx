@@ -70,7 +70,6 @@ export default function MouseFollower() {
       style={{
         transform: `translate(${smoothedState.x}px, ${smoothedState.y}px) translate(-50%, -50%) scale(${smoothedState.scale})`,
         opacity: smoothedState.opacity,
-        transition: "transform 0.1s ease-out, opacity 0.1s ease-out",
       }}
     >
       <Blob fill={smoothedState.color} />

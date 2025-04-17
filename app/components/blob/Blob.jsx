@@ -39,7 +39,7 @@ export default function Blob({ fill }) {
   return (
     <svg viewBox="0 0 200 200" width={400} height={400}>
       <motion.path
-        key={currentIndex} // This forces a fresh animation when index changes
+        key={currentIndex}
         fill={fill}
         transform="translate(100 100)"
         initial={{ d: blobs[currentIndex] }}
