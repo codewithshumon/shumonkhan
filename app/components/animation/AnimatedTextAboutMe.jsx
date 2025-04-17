@@ -6,7 +6,7 @@ import useScrollY from "../../hooks/useScroll";
 
 const AnimatedTextAboutMe = ({ animationComplete }) => {
   const animationText =
-    "© Code & Design By Shumon Khan • Hi, I am a Designer and Developer";
+    "© Design & Code By Shumon Khan • Hi, I am a Designer and Developer";
 
   const scrollY = useScrollY();
   const scrollRef = useRef(scrollY);

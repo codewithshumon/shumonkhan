@@ -1,30 +1,34 @@
 "use client";
 
+import ContactForm from "@/app/components/contact/ContactForm";
 import MouseFollower from "../../components/global/MouseFollower";
+import ContactDetails from "@/app/components/contact/ContactDetails";
 
 export default function Contact() {
   return (
-    <div className="w-full h-full relative bg-[#1C1D20]">
+    <div className="w-full min-h-screen relative bg-[#1C1D20] z-[1]">
       <MouseFollower />
 
       {/* Content Section */}
-      <div className="w-full h-full px-10 py-10 relative z-[5]">
-        <div className="w-full h-[100vh] flex flex-col justify-center items-center">
-          <h1 className="text-7xl font-bold text-[#dfbb1c] mouse-animate-scale">
-            this is the first div
-          </h1>
+      <section className="relative z-[5] pb-[500px]">
+        <div className="w-full h-full flex items-center justify-center p-4">
+          <div className="max-w-[1440px] w-full">
+            <div className="w-full px-4 sm:px-8 md:px-10 lg:px-30">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                Have a project in Mind?
+              </h1>
+              <h2 className="text-xl md:text-2xl text-white mb-6 md:mb-10">
+                Let&apos;s start a project together
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
+                <ContactForm />
+                <ContactDetails />
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="w-full h-[100vh] flex flex-col justify-center items-center">
-          <h1 className="text-7xl font-bold text-[#0adfcd] mouse-animate-hidden">
-            this is the second div
-          </h1>
-        </div>
-        <div className="w-full h-[100vh] flex flex-col justify-center items-center">
-          <h1 className="text-7xl font-bold text-[#9b0d9b] mouse-animate-color">
-            this is the third div
-          </h1>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }
