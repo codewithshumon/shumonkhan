@@ -6,11 +6,10 @@ import { setInitialLoadComplete } from "./store/slice/animationSlice";
 import LogoAnimation from "./components/animation/LogoAnimation";
 import HeaderMenu from "./components/header/HeaderMenu";
 import PageTransition from "./components/animation/PageTransition";
-import { usePathname } from "next/navigation";
+import Footer from "./components/footer/Footer";
 
 export default function ClientLayout({ children }) {
   const dispatch = useDispatch();
-  const pathname = usePathname();
   const { isInitialLoad } = useSelector((state) => state.animation);
 
   useEffect(() => {
@@ -24,7 +23,8 @@ export default function ClientLayout({ children }) {
       <PageTransition />
       <LogoAnimation />
       <HeaderMenu />
-      {children}
+      <main>{children}</main>
+      <Footer />
     </>
   );
 }

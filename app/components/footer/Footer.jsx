@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -29,15 +28,14 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="w-full h-full relative mt-[500px] z-[1]">
+    <footer className="w-full h-full relative mt-[500px]">
       {/* Footer background layer */}
-      <div className="fixed h-[500px] left-0 right-0 bottom-0 z-[2] bg-gray-900 border-t border-gray-800" />
+      <div className="fixed h-[500px] left-0 right-0 bottom-0 z-[-1] bg-[#630863] pointer-events-none" />
 
       {/* Footer content layer */}
-      <div className="fixed h-[500px] left-0 right-0 bottom-0 z-[10] pointer-events-none">
-        <div className="relative mx-auto px-6 py-12 pointer-events-auto">
+      <div className="fixed h-[500px] left-0 right-0 bottom-0 pointer-events-none">
+        <div className="container mx-auto px-6 py-12 h-full pointer-events-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Brand section */}
             <div className="md:col-span-2">
               <Link
                 href="/"
@@ -66,7 +64,6 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Quick links */}
             <div>
               <h3 className="text-white font-semibold text-lg mb-4">Explore</h3>
               <ul className="space-y-2">
@@ -83,7 +80,6 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Contact info */}
             <div>
               <h3 className="text-white font-semibold text-lg mb-4">
                 Get in touch
@@ -109,7 +105,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Bottom section */}
           <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="flex items-center">
               © {currentYear} YourName. All rights reserved.

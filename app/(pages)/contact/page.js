@@ -10,7 +10,7 @@ export default function Contact() {
       <MouseFollower />
 
       {/* Content Section */}
-      <section className="relative z-[5] pb-[500px]">
+      <section className="relative z-[5]">
         <div className="w-full h-full flex items-center justify-center p-4">
           <div className="max-w-[1440px] w-full">
             <div className="w-full px-4 sm:px-8 md:px-10 lg:px-30">
