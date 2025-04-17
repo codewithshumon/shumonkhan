@@ -8,7 +8,6 @@ const lerp = (a, b, t) => a * (1 - t) + b * t;
 
 export default function MouseFollower() {
   const position = useMouse();
-  const [currentBlobIndex, setCurrentBlobIndex] = useState(0);
 
   const [smoothedState, setSmoothedState] = useState({
     x: position.x,
@@ -25,13 +24,6 @@ export default function MouseFollower() {
     color: "#FF0066",
     hidden: false,
   });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentBlobIndex((prev) => (prev + 1) % 15); // 15 blobs
-    }, 500);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     targetState.current.x = position.x;
@@ -81,7 +73,7 @@ export default function MouseFollower() {
         transition: "transform 0.1s ease-out, opacity 0.1s ease-out",
       }}
     >
-      <Blob index={currentBlobIndex} fill={smoothedState.color} />
+      <Blob fill={smoothedState.color} />
     </div>
   );
 }
