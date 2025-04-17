@@ -2,23 +2,26 @@
 
 import { useState, useEffect, useRef } from "react";
 import useMouse from "../../hooks/useMouse";
+import Blob from "@/app/components/blob/Blob";
 
 const lerp = (a, b, t) => a * (1 - t) + b * t;
 
 export default function MouseFollower() {
   const position = useMouse();
+
   const [smoothedState, setSmoothedState] = useState({
     x: position.x,
     y: position.y,
     scale: 1,
-    color: "bg-green-400",
+    color: "#ff16ff",
     opacity: 1,
   });
+
   const targetState = useRef({
     x: 0,
     y: 0,
     scale: 1,
-    color: "bg-green-400",
+    color: "#ff16ff",
     hidden: false,
   });
 
@@ -27,15 +30,15 @@ export default function MouseFollower() {
     targetState.current.y = position.y;
 
     const elements = document.elementsFromPoint(position.x, position.y);
-    let newState = { scale: 1, color: "bg-green-400", hidden: false };
+    let newState = { scale: 1, color: "#ff16ff", hidden: false };
 
     elements.forEach((element) => {
       if (element.classList.contains("mouse-animate-scale")) {
-        newState = { scale: 3, color: "bg-[#0a3aca]", hidden: false };
+        newState = { scale: 2, color: "#0a3aca", hidden: false };
       } else if (element.classList.contains("mouse-animate-hidden")) {
-        newState = { scale: 0, color: "bg-green-400", hidden: true };
+        newState = { scale: 0, color: "#ff16ff", hidden: true };
       } else if (element.classList.contains("mouse-animate-color")) {
-        newState = { scale: 2, color: "bg-[#ff16ff]", hidden: false };
+        newState = { scale: 2, color: "#FF0066", hidden: false };
       }
     });
 
@@ -63,11 +66,13 @@ export default function MouseFollower() {
 
   return (
     <div
-      className={`fixed w-10 h-10 rounded-full pointer-events-none transition-all duration-100 ease-out ${smoothedState.color}`}
+      className="fixed pointer-events-none"
       style={{
         transform: `translate(${smoothedState.x}px, ${smoothedState.y}px) translate(-50%, -50%) scale(${smoothedState.scale})`,
         opacity: smoothedState.opacity,
       }}
-    />
+    >
+      <Blob fill={smoothedState.color} />
+    </div>
   );
 }
