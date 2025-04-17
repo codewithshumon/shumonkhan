@@ -8,8 +8,6 @@ const lerp = (a, b, t) => a * (1 - t) + b * t;
 export default function Contact() {
   const position = useMouse();
 
-  console.log("[position]", position);
-
   const [smoothedState, setSmoothedState] = useState({
     x: position.x,
     y: position.y,
@@ -41,6 +39,12 @@ export default function Contact() {
         newState = { scale: 2, color: "bg-[#ff16ff]", hidden: false };
       }
     });
+
+    // Hide cursor at (0,0) regardless of elements
+    if (position.x === 0 && position.y === 0) {
+      newState.hidden = true;
+      newState.scale = 0;
+    }
 
     targetState.current = { ...targetState.current, ...newState };
   }, [position.x, position.y]);
