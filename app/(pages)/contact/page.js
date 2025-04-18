@@ -1,16 +1,15 @@
 "use client";
 
 import ContactForm from "@/app/components/contact/ContactForm";
-import MouseFollower from "../../components/global/MouseFollower";
 import ContactDetails from "@/app/components/contact/ContactDetails";
 
 export default function Contact() {
   return (
-    <div className="w-full min-h-screen relative bg-[#1C1D20] z-[1]">
-      <MouseFollower />
-
-      {/* Content Section */}
-      <section className="relative z-[5]">
+    <section className="w-full min-h-screen relative bg-[#1C1D20]">
+      {/* Background Layer */}
+      <div className="relative z-[5]">
+        {" "}
+        {/* Content Layer */}
         <div className="w-full h-full flex items-center justify-center p-4">
           <div className="max-w-[1440px] w-full">
             <div className="w-full px-4 sm:px-8 md:px-10 lg:px-30">
@@ -28,12 +27,11 @@ export default function Contact() {
             </div>
 
             <div className="w-full text-white text-5xl py-20 flex justify-center">
-              {/* Ensure this has cursor-pointer */}
               <button className="w-20 h-10 cursor-pointer">Home Page</button>
             </div>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }

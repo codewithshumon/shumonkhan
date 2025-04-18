@@ -7,6 +7,7 @@ import LogoAnimation from "./components/animation/LogoAnimation";
 import HeaderMenu from "./components/header/HeaderMenu";
 import PageTransition from "./components/animation/PageTransition";
 import Footer from "./components/footer/Footer";
+import MouseFollower from "./components/global/MouseFollower"; // ✅ Add this
 
 export default function ClientLayout({ children }) {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ export default function ClientLayout({ children }) {
 
   return (
     <>
+      <MouseFollower />
       <PageTransition />
       <LogoAnimation />
       <HeaderMenu />
