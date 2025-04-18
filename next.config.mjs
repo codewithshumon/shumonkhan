@@ -5,11 +5,27 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "avatar.iran.liara.run",
-        // Optional: you can add port and pathname if needed
-        // port: '',
-        // pathname: '/public/**',
       },
     ],
+  },
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.(lottie|json)$/,
+      type: "asset/resource",
+      generator: {
+        filename: "static/[hash][ext]",
+      },
+    });
+    return config;
+  },
+  experimental: {
+    turbo: {
+      rules: {
+        "*.lottie": {
+          loaders: ["file-loader"],
+        },
+      },
+    },
   },
 };
 
