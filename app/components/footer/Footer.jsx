@@ -47,18 +47,34 @@ export default function Footer() {
             </div>
 
             {/* Lottie Hover Interaction */}
-            <div
-              ref={hoverAreaRef}
-              className="flex items-center justify-center w-20 h-20 cursor-pointer hover-area relative z-[10]"
-            >
-              <LottiePlayer
-                src="/animations/world.lottie"
-                loop={true}
-                play={isHovered}
-                speed={0.5}
-                segment={[1, 30]}
-                className="w-16 h-16 pointer-events-none"
-              />
+
+            <div className=" flex flex-col">
+              <div
+                ref={hoverAreaRef}
+                className="flex items-center justify-center w-20 h-20 cursor-pointer hover-area relative z-[10]"
+              >
+                <LottiePlayer
+                  src="/animations/world.lottie"
+                  loop={true}
+                  play={isHovered}
+                  speed={0.5}
+                  segment={[1, 30]}
+                  className="w-16 h-16 pointer-events-none"
+                />
+              </div>
+              <div
+                ref={hoverAreaRef}
+                className="flex items-center justify-center w-20 h-20 cursor-pointer hover-area relative z-[10]"
+              >
+                <LottiePlayer
+                  src="/animations/world.lottie"
+                  loop={true}
+                  play={isHovered}
+                  speed={0.5}
+                  segment={[1, 30]}
+                  className="w-16 h-16 pointer-events-none"
+                />
+              </div>
             </div>
           </div>
 
