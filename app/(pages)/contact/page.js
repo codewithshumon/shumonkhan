@@ -14,10 +14,10 @@ export default function Contact() {
         <div className="w-full h-full flex items-center justify-center p-4">
           <div className="max-w-[1440px] w-full">
             <div className="w-full px-4 sm:px-8 md:px-10 lg:px-30">
-              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 cursor-pointer">
                 Have a project in Mind?
               </h1>
-              <h2 className="text-xl md:text-2xl text-white mb-6 md:mb-10">
+              <h2 className="text-xl md:text-2xl text-white mb-6 md:mb-10 cursor-pointer">
                 Let&apos;s start a project together
               </h2>
 
@@ -25,6 +25,11 @@ export default function Contact() {
                 <ContactForm />
                 <ContactDetails />
               </div>
+            </div>
+
+            <div className="w-full text-white text-5xl py-20 flex justify-center">
+              {/* Ensure this has cursor-pointer */}
+              <button className="w-20 h-10 cursor-pointer">Home Page</button>
             </div>
           </div>
         </div>
