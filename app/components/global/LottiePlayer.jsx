@@ -1,67 +1,52 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const LottiePlayer = ({
   src,
-  autoplay = false,
   loop = false,
-  play = false,
-  pause = false,
   speed = 1,
+  segment = null,
+  play = false,
   className = "",
   style = {},
 }) => {
-  const dotLottieRef = useRef(null);
-  const [isReady, setIsReady] = useState(false);
+  const [dotLottie, setDotLottie] = useState(null);
+  const containerRef = useRef(null);
 
   const dotLottieRefCallback = (instance) => {
-    console.log("Lottie instance created", instance);
-    dotLottieRef.current = instance;
-    if (instance) {
-      setIsReady(true);
-      // Initialize with current props
-      instance.setLoop(loop);
-      instance.setSpeed(speed);
-      if (autoplay) instance.play();
-    }
+    setDotLottie(instance);
   };
 
-  // Handle play/pause changes
   useEffect(() => {
-    if (!isReady || !dotLottieRef.current) return;
+    if (!dotLottie) return;
 
-    console.log("Updating playback", { play, pause });
+    dotLottie.setLoop(loop);
+    dotLottie.setSpeed(speed);
 
-    if (pause) {
-      dotLottieRef.current.pause();
-    } else if (play) {
-      dotLottieRef.current.play();
+    if (segment) {
+      dotLottie.setSegment(segment[0], segment[1]);
     }
-  }, [play, pause, isReady]);
 
-  // Handle speed/loop changes
-  useEffect(() => {
-    if (!isReady || !dotLottieRef.current) return;
-    dotLottieRef.current.setSpeed(speed);
-    dotLottieRef.current.setLoop(loop);
-  }, [speed, loop, isReady]);
+    if (play) {
+      dotLottie.play();
+    } else {
+      dotLottie.pause();
+    }
+  }, [play, dotLottie, loop, speed, segment]);
 
   return (
-    <div className={className} style={style}>
+    <div
+      className={className}
+      style={{ ...style, pointerEvents: "auto" }} // ensure pointer events are allowed
+      ref={containerRef}
+    >
       <DotLottieReact
         src={src}
+        autoplay={false}
         loop={loop}
-        autoplay={autoplay}
         dotLottieRefCallback={dotLottieRefCallback}
-        onError={(error) => console.error("Lottie error:", error)}
-        onLoad={() => console.log("Lottie loaded successfully")}
-        onInstanceCreated={(instance) => {
-          console.log("Instance fully created");
-          dotLottieRef.current = instance;
-          setIsReady(true);
-        }}
       />
     </div>
   );

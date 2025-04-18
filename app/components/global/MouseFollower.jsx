@@ -37,7 +37,8 @@ export default function MouseFollower() {
       if (
         element.tagName === "BUTTON" ||
         element.tagName === "A" ||
-        element.classList.contains("cursor-pointer")
+        element.classList.contains("cursor-pointer") ||
+        element.classList.contains("hover-area")
       ) {
         isClickable = true;
       }
@@ -56,9 +57,7 @@ export default function MouseFollower() {
       newState.scale = 0;
     }
 
-    // Update browser's native cursor style
     document.body.style.cursor = isClickable ? "pointer" : "default";
-
     targetState.current = { ...targetState.current, ...newState };
   }, [position.x, position.y]);
 
@@ -78,7 +77,7 @@ export default function MouseFollower() {
 
   return (
     <div
-      className="fixed pointer-events-none z-[3]"
+      className="fixed z-[3] pointer-events-none"
       style={{
         transform: `translate(${smoothedState.x}px, ${smoothedState.y}px) translate(-50%, -50%) scale(${smoothedState.scale})`,
         opacity: smoothedState.opacity,

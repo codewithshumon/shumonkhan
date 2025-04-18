@@ -3,16 +3,14 @@
 import ContactForm from "@/app/components/contact/ContactForm";
 import ContactDetails from "@/app/components/contact/ContactDetails";
 import { useRouter } from "next/navigation";
-import LottiePlayer from "@/app/components/global/LottiePlayer";
 
 export default function Contact() {
   const router = useRouter();
 
   return (
-    <main className="w-full min-h-screen relative bg-[#1C1D20]">
-      {/* Existing Contact Content - NO CHANGES */}
+    <main className="w-full min-h-screen relative bg-[#1C1D20] overflow-hidden">
       <section className="relative z-[5]" aria-labelledby="contact-heading">
-        <div className="w-full h-full flex items-center justify-center p-4">
+        <div className="w-full h-full flex-col items-center justify-center p-4 relative z-10">
           <div className="max-w-[1440px] w-full">
             <header className="w-full px-4 sm:px-8 md:px-10 lg:px-30">
               <h1
@@ -39,7 +37,7 @@ export default function Contact() {
               <div className="w-full text-white text-5xl py-20 flex justify-center">
                 <button
                   onClick={() => router.push("/")}
-                  className="w-20 h-10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+                  className="w-20 h-10 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 hover:text-[#FFD230] transition-colors duration-300"
                   aria-label="Return to home page"
                 >
                   Home Page
@@ -47,16 +45,6 @@ export default function Contact() {
               </div>
             </nav>
           </div>
-        </div>
-
-        {/* NEW Lottie Animation - Added after contact content */}
-        <div className="w-full h-full ">
-          <LottiePlayer
-            src="/animations/world.lottie"
-            autoplay={true}
-            loop={true}
-            className="w-full h-full opacity-10 "
-          />
         </div>
       </section>
     </main>
