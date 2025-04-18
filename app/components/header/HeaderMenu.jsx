@@ -26,8 +26,6 @@ const HeaderMenu = () => {
   const dispatch = useDispatch();
   const { scrollY } = useScroll();
 
-  console.log("[hoveredHref]", hoveredHref);
-
   const handlePageTransition = useCallback((e, href) => {
     e.preventDefault();
     router.push(href);

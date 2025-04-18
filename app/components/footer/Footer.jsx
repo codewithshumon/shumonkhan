@@ -1,14 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import LottiePlayer from "../global/LottiePlayer";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
   const [isHovered, setIsHovered] = useState(false);
+  const hoverAreaRef = useRef(null);
 
-  console.log("Footer hover state:", isHovered);
+  useEffect(() => {
+    const handleHoverStatus = (e) => {
+      setIsHovered(e.detail);
+      console.log("Hover area status:", e.detail);
+      console.log("Hover area status:", e.detail ? "Entered" : "Left");
+    };
+
+    window.addEventListener("hoverAreaStatus", handleHoverStatus);
+    return () => {
+      window.removeEventListener("hoverAreaStatus", handleHoverStatus);
+    };
+  }, []);
 
   return (
     <footer
@@ -16,7 +28,7 @@ export default function Footer() {
       role="contentinfo"
       aria-label="Website footer"
     >
-      <div className="relative h-[500px] left-0 right-0 bottom-0 z-[20]">
+      <div className="relative h-[500px] left-0 right-0 bottom-0 z-[5]">
         <div className="container mx-auto px-6 py-12 h-full">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Brand Section */}
@@ -35,27 +47,18 @@ export default function Footer() {
             </div>
 
             {/* Lottie Hover Interaction */}
-            <div className="flex items-center justify-center w-20 h-20 cursor-pointer hover-area relative z-[10]">
-              <div
-                className="w-full h-full pointer-events-auto"
-                onMouseEnter={() => {
-                  console.log("Mouse entered Lottie");
-                  setIsHovered(true);
-                }}
-                onMouseLeave={() => {
-                  console.log("Mouse left Lottie");
-                  setIsHovered(false);
-                }}
-              >
-                <LottiePlayer
-                  src="/animations/world.lottie"
-                  loop={true}
-                  play={isHovered}
-                  speed={0.5}
-                  segment={[1, 30]}
-                  className="w-16 h-16"
-                />
-              </div>
+            <div
+              ref={hoverAreaRef}
+              className="flex items-center justify-center w-20 h-20 cursor-pointer hover-area relative z-[10]"
+            >
+              <LottiePlayer
+                src="/animations/world.lottie"
+                loop={true}
+                play={isHovered}
+                speed={0.5}
+                segment={[1, 30]}
+                className="w-16 h-16 pointer-events-none"
+              />
             </div>
           </div>
 

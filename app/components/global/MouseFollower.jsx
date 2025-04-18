@@ -32,6 +32,7 @@ export default function MouseFollower() {
     const elements = document.elementsFromPoint(position.x, position.y);
     let newState = { scale: 1, color: "#9cf79c", hidden: false };
     let isClickable = false;
+    let hoverAreaDetected = false;
 
     elements.forEach((element) => {
       if (
@@ -43,6 +44,10 @@ export default function MouseFollower() {
         isClickable = true;
       }
 
+      if (element.classList.contains("hover-area")) {
+        hoverAreaDetected = true;
+      }
+
       if (element.classList.contains("mouse-animate-scale")) {
         newState = { scale: 2, color: "#0a3aca", hidden: false };
       } else if (element.classList.contains("mouse-animate-hidden")) {
@@ -51,6 +56,12 @@ export default function MouseFollower() {
         newState = { scale: 2, color: "#FF0066", hidden: false };
       }
     });
+
+    window.dispatchEvent(
+      new CustomEvent("hoverAreaStatus", {
+        detail: hoverAreaDetected,
+      })
+    );
 
     if (position.x === 0 && position.y === 0) {
       newState.hidden = true;
@@ -77,7 +88,7 @@ export default function MouseFollower() {
 
   return (
     <div
-      className="fixed z-[3] pointer-events-none"
+      className="fixed pointer-events-none z-[3]"
       style={{
         transform: `translate(${smoothedState.x}px, ${smoothedState.y}px) translate(-50%, -50%) scale(${smoothedState.scale})`,
         opacity: smoothedState.opacity,
