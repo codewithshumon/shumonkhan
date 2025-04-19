@@ -1,12 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Link from "next/link";
 import LottiePlayer from "../global/LottiePlayer";
 
 const IconAnimation = ({ src, speed, segment, className, frame }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [initialFram, setInitialFram] = useState(0);
 
   console.log("[isHovered in world]", isHovered);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (frame) {
+        setInitialFram(frame);
+      }
+    }, 1000);
+  }, [frame]);
 
   return (
     <Link
@@ -23,7 +32,7 @@ const IconAnimation = ({ src, speed, segment, className, frame }) => {
         play={isHovered}
         speed={speed}
         segment={segment}
-        frame={frame}
+        frame={initialFram}
         className={`${
           className ? className : "w-16 h-16 "
         } pointer-events-none`}

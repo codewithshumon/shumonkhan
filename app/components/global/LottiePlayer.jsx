@@ -15,20 +15,13 @@ const LottiePlayer = ({
   style = {},
 }) => {
   const [dotLottie, setDotLottie] = useState(null);
-  const containerRef = useRef(null);
-
-  console.log("[play]", play);
-  console.log("[frame]", frame);
-  console.log("[containerRef]", containerRef.current);
 
   const dotLottieRefCallback = (instance) => {
     setDotLottie(instance);
   };
 
   useEffect(() => {
-    if (!dotLottie) return;
     if (frame) {
-      console.log("[frame indixe side effect]", frame);
       dotLottie.setFrame(frame);
     }
   }, [frame]);
@@ -47,19 +40,12 @@ const LottiePlayer = ({
       dotLottie.play();
     } else {
       dotLottie.stop();
-
-      if (frame) {
-        dotLottie.setFrame(frame);
-      }
+      dotLottie.setFrame(frame);
     }
-  }, [play, dotLottie, loop, speed, segment, frame]);
+  }, [play, dotLottie, loop, speed, segment]);
 
   return (
-    <div
-      className={className}
-      style={{ ...style, pointerEvents: "auto" }}
-      ref={containerRef}
-    >
+    <div className={className} style={{ ...style, pointerEvents: "auto" }}>
       <DotLottieReact
         src={src}
         autoplay={autoplay}

@@ -39,7 +39,7 @@ export default function Footer() {
               <IconAnimation
                 src="/animations/linkedin.lottie"
                 speed={2}
-                frame={120}
+                frame={144}
               />
             </div>
           </div>
