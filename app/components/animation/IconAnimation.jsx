@@ -3,11 +3,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import LottiePlayer from "../global/LottiePlayer";
 
-const IconAnimation = ({ src, speed, segment, className, frame }) => {
+const IconAnimation = ({
+  src,
+  speed,
+  startEndFrame,
+  className,
+  frame,
+  href,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const [initialFram, setInitialFram] = useState(0);
-
-  console.log("[isHovered in world]", isHovered);
 
   useEffect(() => {
     setTimeout(() => {
@@ -19,7 +24,7 @@ const IconAnimation = ({ src, speed, segment, className, frame }) => {
 
   return (
     <Link
-      href="https://www.youtube.com/"
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       onMouseEnter={() => setIsHovered(true)}
@@ -31,7 +36,7 @@ const IconAnimation = ({ src, speed, segment, className, frame }) => {
         loop={true}
         play={isHovered}
         speed={speed}
-        segment={segment}
+        startEndFrame={startEndFrame}
         frame={initialFram}
         className={`${
           className ? className : "w-16 h-16 "

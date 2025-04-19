@@ -32,12 +32,14 @@ export default function Footer() {
 
             <div className=" flex flex-col">
               <IconAnimation
+                href="https://www.youtube.com/"
                 src="/animations/world.lottie"
                 speed={1}
-                segment={[1, 30]}
+                startEndFrame={[1, 30]}
               />
               <IconAnimation
                 src="/animations/linkedin.lottie"
+                href="https://www.youtube.com/"
                 speed={2}
                 frame={144}
               />
