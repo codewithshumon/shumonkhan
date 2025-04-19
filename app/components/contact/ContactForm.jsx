@@ -27,7 +27,7 @@ const ContactForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full space-y-8 bg-blue-600">
+    <form onSubmit={handleSubmit} className="w-full space-y-8 ">
       {/* Name Field */}
       <div className="relative">
         <span className="text-[#A4A4A4] text-sm mb-2 block">01</span>

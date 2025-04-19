@@ -16,6 +16,12 @@ export default function About() {
           >
             About Our Company
           </h1>
+          <h2>
+            Hi, I&apos;m Shumon Khan — a freelance designer and developer from
+            Bangladesh. I craft websites and mobile apps that blend creativity
+            with functionality, helping brands and agencies bring their ideas to
+            life.
+          </h2>
           <p className="sr-only">Introduction to our company</p>
         </section>
 
