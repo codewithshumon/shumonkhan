@@ -141,7 +141,9 @@ const SideMenu = ({ isMenuOpen, setIsMenuOpen }) => {
       <div
         ref={overlayRef}
         onClick={() => setIsMenuOpen(false)}
-        className="fixed inset-0 bg-black/15 z-30 opacity-0"
+        className={`${
+          isMenuOpen ? "fixed" : "relative"
+        }  inset-0 bg-black/15 z-30 opacity-0`}
       />
 
       <div

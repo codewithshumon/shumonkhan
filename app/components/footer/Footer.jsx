@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import WorldIcon from "../animation/icons/WorldIcon";
-import LinkedinIcon from "../animation/icons/LinkedinIcon";
+import IconAnimation from "../animation/IconAnimation";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -32,8 +31,16 @@ export default function Footer() {
             </div>
 
             <div className=" flex flex-col">
-              <WorldIcon />
-              <LinkedinIcon />
+              <IconAnimation
+                src="/animations/world.lottie"
+                speed={1}
+                segment={[1, 30]}
+              />
+              <IconAnimation
+                src="/animations/linkedin.lottie"
+                speed={2}
+                frame={120}
+              />
             </div>
           </div>
 

@@ -35,7 +35,12 @@ export default function Blob({ fill }) {
   }, []);
 
   return (
-    <svg viewBox="0 0 200 200" width={400} height={400}>
+    <svg
+      viewBox="0 0 200 200"
+      width={400}
+      height={400}
+      style={{ pointerEvents: "none" }}
+    >
       <motion.path
         key={currentIndex}
         fill={fill}

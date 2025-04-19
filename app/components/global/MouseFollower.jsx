@@ -31,23 +31,8 @@ export default function MouseFollower() {
 
     const elements = document.elementsFromPoint(position.x, position.y);
     let newState = { scale: 1, color: "#9cf79c", hidden: false };
-    let isClickable = false;
-    let hoverAreaDetected = false;
 
     elements.forEach((element) => {
-      if (
-        element.tagName === "BUTTON" ||
-        element.tagName === "A" ||
-        element.classList.contains("cursor-pointer") ||
-        element.classList.contains("hover-area")
-      ) {
-        isClickable = true;
-      }
-
-      if (element.classList.contains("hover-area")) {
-        hoverAreaDetected = true;
-      }
-
       if (element.classList.contains("mouse-animate-scale")) {
         newState = { scale: 2, color: "#0a3aca", hidden: false };
       } else if (element.classList.contains("mouse-animate-hidden")) {
@@ -57,18 +42,11 @@ export default function MouseFollower() {
       }
     });
 
-    window.dispatchEvent(
-      new CustomEvent("hoverAreaStatus", {
-        detail: hoverAreaDetected,
-      })
-    );
-
     if (position.x === 0 && position.y === 0) {
       newState.hidden = true;
       newState.scale = 0;
     }
 
-    document.body.style.cursor = isClickable ? "pointer" : "default";
     targetState.current = { ...targetState.current, ...newState };
   }, [position.x, position.y]);
 

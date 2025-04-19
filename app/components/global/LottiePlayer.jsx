@@ -28,6 +28,7 @@ const LottiePlayer = ({
   useEffect(() => {
     if (!dotLottie) return;
     if (frame) {
+      console.log("[frame indixe side effect]", frame);
       dotLottie.setFrame(frame);
     }
   }, [frame]);
@@ -56,7 +57,7 @@ const LottiePlayer = ({
   return (
     <div
       className={className}
-      style={{ ...style, pointerEvents: "auto" }} // ensure pointer events are allowed
+      style={{ ...style, pointerEvents: "auto" }}
       ref={containerRef}
     >
       <DotLottieReact
