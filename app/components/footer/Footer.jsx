@@ -1,26 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
-import LottiePlayer from "../global/LottiePlayer";
+import WorldIcon from "../animation/icons/WorldIcon";
+import LinkedinIcon from "../animation/icons/LinkedinIcon";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const [isHovered, setIsHovered] = useState(false);
-  const hoverAreaRef = useRef(null);
-
-  useEffect(() => {
-    const handleHoverStatus = (e) => {
-      setIsHovered(e.detail);
-      console.log("Hover area status:", e.detail);
-      console.log("Hover area status:", e.detail ? "Entered" : "Left");
-    };
-
-    window.addEventListener("hoverAreaStatus", handleHoverStatus);
-    return () => {
-      window.removeEventListener("hoverAreaStatus", handleHoverStatus);
-    };
-  }, []);
 
   return (
     <footer
@@ -46,35 +31,9 @@ export default function Footer() {
               </p>
             </div>
 
-            {/* Lottie Hover Interaction */}
-
             <div className=" flex flex-col">
-              <div
-                ref={hoverAreaRef}
-                className="flex items-center justify-center w-20 h-20 cursor-pointer hover-area relative z-[10]"
-              >
-                <LottiePlayer
-                  src="/animations/world.lottie"
-                  loop={true}
-                  play={isHovered}
-                  speed={0.5}
-                  segment={[1, 30]}
-                  className="w-16 h-16 pointer-events-none"
-                />
-              </div>
-              <div
-                ref={hoverAreaRef}
-                className="flex items-center justify-center w-20 h-20 cursor-pointer hover-area relative z-[10]"
-              >
-                <LottiePlayer
-                  src="/animations/world.lottie"
-                  loop={true}
-                  play={isHovered}
-                  speed={0.5}
-                  segment={[1, 30]}
-                  className="w-16 h-16 pointer-events-none"
-                />
-              </div>
+              <WorldIcon />
+              <LinkedinIcon />
             </div>
           </div>
 
