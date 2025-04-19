@@ -8,6 +8,14 @@ const lerp = (a, b, t) => a * (1 - t) + b * t;
 
 export default function MouseFollower() {
   const position = useMouse();
+  const targetState = useRef({
+    x: 0,
+    y: 0,
+    scale: 1,
+    color: "#9cf79c",
+    hidden: false,
+    blendMode: "normal",
+  });
 
   const [smoothedState, setSmoothedState] = useState({
     x: position.x,
@@ -15,15 +23,18 @@ export default function MouseFollower() {
     scale: 1,
     color: "#9cf79c",
     opacity: 1,
+    blendMode: "normal",
   });
 
-  const targetState = useRef({
-    x: 0,
-    y: 0,
-    scale: 1,
-    color: "#9cf79c",
-    hidden: false,
-  });
+  useEffect(() => {
+    // Handle footer hover blend mode
+    const handleFooterHover = (e) => {
+      targetState.current.blendMode = e.detail ? "difference" : "normal";
+    };
+
+    window.addEventListener("footerHover", handleFooterHover);
+    return () => window.removeEventListener("footerHover", handleFooterHover);
+  }, []);
 
   useEffect(() => {
     targetState.current.x = position.x;
@@ -34,11 +45,11 @@ export default function MouseFollower() {
 
     elements.forEach((element) => {
       if (element.classList.contains("mouse-animate-scale")) {
-        newState = { scale: 2, color: "#0a3aca", hidden: false };
+        newState = { ...newState, scale: 2, color: "#0a3aca" };
       } else if (element.classList.contains("mouse-animate-hidden")) {
-        newState = { scale: 0, color: "#ff16ff", hidden: true };
+        newState = { ...newState, scale: 0, hidden: true };
       } else if (element.classList.contains("mouse-animate-color")) {
-        newState = { scale: 2, color: "#FF0066", hidden: false };
+        newState = { ...newState, color: "#FF0066", scale: 2 };
       }
     });
 
@@ -58,6 +69,7 @@ export default function MouseFollower() {
         scale: lerp(prev.scale, targetState.current.scale, 0.1),
         color: targetState.current.color,
         opacity: lerp(prev.opacity, targetState.current.hidden ? 0 : 1, 0.1),
+        blendMode: targetState.current.blendMode,
       }));
       requestAnimationFrame(animate);
     };
@@ -70,6 +82,8 @@ export default function MouseFollower() {
       style={{
         transform: `translate(${smoothedState.x}px, ${smoothedState.y}px) translate(-50%, -50%) scale(${smoothedState.scale})`,
         opacity: smoothedState.opacity,
+        mixBlendMode: smoothedState.blendMode,
+        transition: "mix-blend-mode 0.3s ease",
       }}
     >
       <Blob fill={smoothedState.color} />

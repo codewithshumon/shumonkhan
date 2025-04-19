@@ -1,18 +1,27 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import IconAnimation from "../animation/IconAnimation";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const [hover, setHover] = useState(false);
+
+  useEffect(() => {
+    // Dispatch custom event when hover state changes
+    window.dispatchEvent(new CustomEvent("footerHover", { detail: hover }));
+  }, [hover]);
 
   return (
     <footer
-      className="w-full h-full relative bg-[#630863]"
+      className="w-full h-full relative mt-[500px] z-[-1] "
       role="contentinfo"
       aria-label="Website footer"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
     >
-      <div className="relative h-[500px] left-0 right-0 bottom-0 z-[5]">
+      <div className=" fixed h-[500px] left-0 right-0 bottom-0 z-[5] bg-[#630863]">
         <div className="container mx-auto px-6 py-12 h-full">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Brand Section */}
@@ -36,6 +45,7 @@ export default function Footer() {
                 src="/animations/world.lottie"
                 speed={1}
                 startEndFrame={[1, 30]}
+                frame={144}
               />
               <IconAnimation
                 src="/animations/linkedin.lottie"
